@@ -11,7 +11,7 @@ public partial class ErrorWindow : Window
     {
         InitializeComponent();
 #if DEBUG
-        this.AttachDevTools();
+        Application.Current!.AttachDeveloperTools();
 #endif
     }
 

@@ -48,7 +48,7 @@
             </StackPanel>
         </DockPanel>
         <ScrollViewer>
-            <ListBox Name="States" SelectionMode="Multiple" Items="{Binding VisibleStates}" SelectedItems="{Binding SelectedStates}">
+            <ListBox Name="States" SelectionMode="Multiple" ItemsSource="{Binding VisibleStates}" SelectedItems="{Binding SelectedStates}">
                 <ListBox.ContextMenu>
                     <ContextMenu>
                         <MenuItem Header="Add new state" Command="{Binding CreateNewState}"/>

@@ -3,7 +3,7 @@ using System.IO;
 using System.Reflection;
 using Avalonia;
 using Avalonia.Logging;
-using Avalonia.ReactiveUI;
+using ReactiveUI.Avalonia;
 
 namespace Editor;
 
@@ -37,5 +37,5 @@ class Program
         => AppBuilder.Configure<App>()
             .UsePlatformDetect()
             .LogToTrace()
-            .UseReactiveUI();
+            .UseReactiveUI(_ => { });
 }

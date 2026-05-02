@@ -1,9 +1,9 @@
 ﻿using System.Reactive;
 using Avalonia;
 using Avalonia.Markup.Xaml;
-using Avalonia.ReactiveUI;
 using Editor.ViewModels;
 using ReactiveUI;
+using ReactiveUI.Avalonia;
 
 namespace Editor.Views;
 
@@ -13,7 +13,7 @@ public partial class ConfirmationWindow : ReactiveWindow<ConfirmationWindowViewM
     {
         InitializeComponent();
 #if DEBUG
-        this.AttachDevTools();
+        Application.Current!.AttachDeveloperTools();
 #endif
         this.WhenActivated(d =>
         {
@@ -22,13 +22,13 @@ public partial class ConfirmationWindow : ReactiveWindow<ConfirmationWindowViewM
         });
     }
 
-    private void Confirm(InteractionContext<Unit, Unit> interaction)
+    private void Confirm(IInteractionContext<Unit, Unit> interaction)
     {
         Close(true);
         interaction.SetOutput(Unit.Default);
     }
 
-    private void Decline(InteractionContext<Unit, Unit> interaction)
+    private void Decline(IInteractionContext<Unit, Unit> interaction)
     {
         Close(false);
         interaction.SetOutput(Unit.Default);

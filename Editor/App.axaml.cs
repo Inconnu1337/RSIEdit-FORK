@@ -56,14 +56,13 @@ public class App : Application
 
         Locator.CurrentMutable.RegisterLazySingleton(() =>
         {
-            var assetLoader = AvaloniaLocator.Current.GetService<IAssetLoader>()!;
-            var repoLicensesFile = assetLoader.Open(new Uri("avares://Editor/Assets/repository-licenses.json"));
+            var repoLicensesFile = AssetLoader.Open(new Uri("avares://Editor/Assets/repository-licenses.json"));
             return ParseRepositoryLicenses(repoLicensesFile);
         });
 
         Locator.CurrentMutable.RegisterLazySingleton(async () =>
         {
-            var http = new HttpClient();
+            var http = new HttpClient(new HttpClientHandler { UseProxy = false });
             var response = await http.GetAsync(OnlineRepositoryLicenses);
             if (!response.IsSuccessStatusCode)
                 return null;

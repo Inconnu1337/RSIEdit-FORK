@@ -1,13 +1,15 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Reactive;
+using System.Threading.Tasks;
 using System.Reactive.Linq;
 using Avalonia.Controls;
 using Avalonia.Markup.Xaml;
-using Avalonia.ReactiveUI;
+using Avalonia.Platform.Storage;
 using Editor.ViewModels;
 using Editor.Views.Events;
 using ReactiveUI;
+using ReactiveUI.Avalonia;
 using SixLabors.ImageSharp;
 using SixLabors.ImageSharp.PixelFormats;
 
@@ -43,7 +45,7 @@ public partial class RsiItemView : ReactiveUserControl<RsiItemViewModel>
         AvaloniaXamlLoader.Load(this);
     }
 
-    private void ShowError(InteractionContext<ErrorWindowViewModel, Unit> interaction)
+    private void ShowError(IInteractionContext<ErrorWindowViewModel, Unit> interaction)
     {
         var args = new ShowErrorEvent(interaction.Input) {RoutedEvent = MainWindow.ShowErrorEvent};
         RaiseEvent(args);
@@ -51,46 +53,48 @@ public partial class RsiItemView : ReactiveUserControl<RsiItemViewModel>
         interaction.SetOutput(Unit.Default);
     }
 
-    private void ImportImage(InteractionContext<Unit, string> interaction)
+    private async Task ImportImage(IInteractionContext<Unit, string> interaction)
     {
-        var dialog = new OpenFileDialog
+        var topLevel = TopLevel.GetTopLevel(this)!;
+        var files = await topLevel.StorageProvider.OpenFilePickerAsync(new FilePickerOpenOptions
         {
             AllowMultiple = false,
-            Filters = new List<FileDialogFilter>
+            FileTypeFilter = new List<FilePickerFileType>
             {
-                new()
+                new FilePickerFileType("Image Files")
                 {
-                    Name = "Image Files",
-                    Extensions = RsiItemViewModel.ValidExtensions,
+                    Patterns = RsiItemViewModel.ValidExtensions.Select(e => $"*.{e}").ToList()
                 }
             }
-        };
-        var args = new OpenFileDialogEvent(dialog) {RoutedEvent = MainWindow.OpenFileEvent};
-        RaiseEvent(args);
-
-        interaction.SetOutput(args.Files.FirstOrDefault() ?? string.Empty);
+        });
+        interaction.SetOutput(files.Count > 0 ? files[0].TryGetLocalPath() ?? string.Empty : string.Empty);
     }
 
-    private void ExportPng(InteractionContext<Image<Rgba32>, Unit> interaction)
+    private async Task ExportPng(IInteractionContext<Image<Rgba32>, Unit> interaction)
     {
         if (ViewModel is null)
         {
+            interaction.SetOutput(Unit.Default);
             return;
         }
 
-        var dialog = new SaveFileDialog
+        var topLevel = TopLevel.GetTopLevel(this)!;
+        var file = await topLevel.StorageProvider.SaveFilePickerAsync(new FilePickerSaveOptions
         {
             DefaultExtension = "png",
-            InitialFileName = ViewModel?.SelectedStates[0].Image.State.Name ?? string.Empty,
-        };
+            SuggestedFileName = ViewModel.SelectedStates[0].Image.State.Name ?? string.Empty,
+        });
 
-        var args = new SaveFileDialogEvent(dialog, interaction.Input) { RoutedEvent = MainWindow.SaveFileEvent };
-        RaiseEvent(args);
+        if (file != null)
+        {
+            await using var stream = await file.OpenWriteAsync();
+            await interaction.Input.SaveAsPngAsync(stream);
+        }
 
         interaction.SetOutput(Unit.Default);
     }
 
-    private void Close(InteractionContext<RsiItemViewModel, Unit> interaction)
+    private void Close(IInteractionContext<RsiItemViewModel, Unit> interaction)
     {
         var args = new CloseRsiEvent(interaction.Input) {RoutedEvent = MainWindow.CloseRsiEvent};
         RaiseEvent(args);

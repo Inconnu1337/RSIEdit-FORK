@@ -4,10 +4,10 @@ using System.Text.Json;
 using System.Threading.Tasks;
 using Avalonia;
 using Avalonia.Markup.Xaml;
-using Avalonia.ReactiveUI;
 using Editor.Models;
 using Editor.ViewModels;
 using ReactiveUI;
+using ReactiveUI.Avalonia;
 
 namespace Editor.Views;
 
@@ -17,7 +17,7 @@ public partial class PreferencesWindow : ReactiveWindow<PreferencesWindowViewMod
     {
         InitializeComponent();
 #if DEBUG
-        this.AttachDevTools();
+        Application.Current!.AttachDeveloperTools();
 #endif
         this.WhenActivated(d =>
         {
@@ -33,7 +33,7 @@ public partial class PreferencesWindow : ReactiveWindow<PreferencesWindowViewMod
         AvaloniaXamlLoader.Load(this);
     }
 
-    private void Save(InteractionContext<Preferences, Unit> arg)
+    private void Save(IInteractionContext<Preferences, Unit> arg)
     {
         var filePath = "preferences.json";
         using var metaJsonFile = File.Create(filePath);
@@ -45,7 +45,7 @@ public partial class PreferencesWindow : ReactiveWindow<PreferencesWindowViewMod
         arg.SetOutput(Unit.Default);
     }
 
-    private void Cancel(InteractionContext<Preferences, Unit> arg)
+    private void Cancel(IInteractionContext<Preferences, Unit> arg)
     {
         Close();
         arg.SetOutput(Unit.Default);

@@ -1,9 +1,9 @@
 ﻿using System.Reactive;
 using Avalonia;
 using Avalonia.Markup.Xaml;
-using Avalonia.ReactiveUI;
 using Editor.ViewModels;
 using ReactiveUI;
+using ReactiveUI.Avalonia;
 
 namespace Editor.Views;
 
@@ -13,7 +13,7 @@ public partial class TextReplaceWindow : ReactiveWindow<TextReplaceWindowViewMod
     {
         InitializeComponent();
 #if DEBUG
-        this.AttachDevTools();
+        Application.Current!.AttachDeveloperTools();
 #endif
 
         this.WhenActivated(d =>
@@ -28,13 +28,13 @@ public partial class TextReplaceWindow : ReactiveWindow<TextReplaceWindowViewMod
         AvaloniaXamlLoader.Load(this);
     }
 
-    private void Confirm(InteractionContext<(string, string), Unit> arg)
+    private void Confirm(IInteractionContext<(string, string), Unit> arg)
     {
         Close(true);
         arg.SetOutput(Unit.Default);
     }
 
-    private void Decline(InteractionContext<Unit, Unit> arg)
+    private void Decline(IInteractionContext<Unit, Unit> arg)
     {
         Close(false);
         arg.SetOutput(Unit.Default);

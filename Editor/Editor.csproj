@@ -16,12 +16,11 @@
   <ItemGroup>
     <PackageReference Include="Avalonia" />
     <PackageReference Include="Avalonia.Desktop" />
-    <PackageReference Include="Avalonia.Diagnostics" Condition="'$(Configuration)' == 'Debug'" />
-    <PackageReference Include="Avalonia.ReactiveUI" />
+    <PackageReference Include="Avalonia.Themes.Fluent" />
+    <PackageReference Include="AvaloniaUI.DiagnosticsSupport" Condition="'$(Configuration)' == 'Debug'" />
     <PackageReference Include="CommunityToolkit.Mvvm" />
-    <PackageReference Include="Microsoft.Toolkit.Diagnostics" />
     <PackageReference Include="Octokit" />
-    <PackageReference Include="Splat" />
+    <PackageReference Include="ReactiveUI.Avalonia" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\RSI.NET\SpaceWizards.RsiLib\SpaceWizards.RsiLib.csproj" />

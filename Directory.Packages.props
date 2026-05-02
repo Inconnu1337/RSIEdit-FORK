@@ -3,17 +3,17 @@
     <ManagePackageVersionsCentrally>true</ManagePackageVersionsCentrally>
   </PropertyGroup>
   <ItemGroup>
-    <PackageVersion Include="Avalonia.Headless" Version="0.10.22" />
+    <PackageVersion Include="Avalonia.Headless" Version="12.0.2" />
     <PackageVersion Include="CommunityToolkit.Mvvm" Version="8.4.0" />
     <PackageVersion Include="Microsoft.NET.Test.Sdk" Version="17.14.1" />
     <PackageVersion Include="NUnit" Version="4.3.2" />
     <PackageVersion Include="NUnit3TestAdapter" Version="5.0.0" />
-    <PackageVersion Include="Avalonia" Version="0.10.22" />
-    <PackageVersion Include="Avalonia.Desktop" Version="0.10.22" />
-    <PackageVersion Include="Avalonia.Diagnostics" Version="0.10.22" />
-    <PackageVersion Include="Avalonia.ReactiveUI" Version="0.10.22" />
-    <PackageVersion Include="Microsoft.Toolkit.Diagnostics" Version="7.1.2" />
+    <PackageVersion Include="Avalonia" Version="12.0.2" />
+    <PackageVersion Include="Avalonia.Desktop" Version="12.0.2" />
+    <PackageVersion Include="Avalonia.Themes.Fluent" Version="12.0.2" />
+    <PackageVersion Include="AvaloniaUI.DiagnosticsSupport" Version="2.2.1" />
     <PackageVersion Include="Octokit" Version="14.0.0" />
-    <PackageVersion Include="Splat" Version="14.6.37" />
+    <PackageVersion Include="ReactiveUI.Avalonia" Version="12.0.1" />
+    <PackageVersion Include="Splat" Version="19.3.1" />
   </ItemGroup>
 </Project>

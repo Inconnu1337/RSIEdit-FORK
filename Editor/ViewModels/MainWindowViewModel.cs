@@ -13,6 +13,7 @@ using System.Reactive.Linq;
 using System.Runtime.InteropServices;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
+using Avalonia.Input.Platform;
 using Avalonia.Logging;
 using CommunityToolkit.Mvvm.Input;
 using Editor.Extensions;
@@ -35,7 +36,7 @@ public partial class MainWindowViewModel : ViewModelBase
 {
     private const string StatesClipboard = "RSIEdit_States";
 
-    private static readonly HttpClient Http = new();
+    private static readonly HttpClient Http = new(new HttpClientHandler { UseProxy = false });
     private static readonly GitHubClient GitHub = new(new ProductHeaderValue("RSIEdit"));
 
     private static readonly ImmutableArray<string> ValidDownloadHosts =
@@ -373,22 +374,17 @@ public partial class MainWindowViewModel : ViewModelBase
         return dmiExtensionIndex != -1;
     }
 
-    private bool CanPaste()
-    {
-        if (Application.Current?.Clipboard is not { } clipboard)
-            return false;
-
-        var text = clipboard.GetTextAsync().Result;
-        return text == StatesClipboard || TryGetPasteInformation(text, out _, out _, out _);
-    }
-
-    [RelayCommand(CanExecute = nameof(CanPaste))]
+    [RelayCommand]
     public async Task Paste()
     {
-        if (Application.Current?.Clipboard is not { } clipboard)
+        var clipboard = (Application.Current?.ApplicationLifetime as Avalonia.Controls.ApplicationLifetimes.IClassicDesktopStyleApplicationLifetime)?.MainWindow?.Clipboard;
+        if (clipboard is null)
             return;
 
-        var text = await clipboard.GetTextAsync();
+        var text = await clipboard.TryGetTextAsync();
+        if (text == null)
+            return;
+
         if (text == StatesClipboard)
         {
             await PasteStates();
@@ -567,7 +563,8 @@ public partial class MainWindowViewModel : ViewModelBase
         if (!CanCopyStatesRsi(out var rsi))
             return;
 
-        if (Application.Current?.Clipboard is { } clipboard)
+        var clipboard = (Application.Current?.ApplicationLifetime as Avalonia.Controls.ApplicationLifetimes.IClassicDesktopStyleApplicationLifetime)?.MainWindow?.Clipboard;
+        if (clipboard is not null)
             await clipboard.SetTextAsync(StatesClipboard);
 
         _copiedStates.Clear();

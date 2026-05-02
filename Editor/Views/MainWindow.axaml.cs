@@ -12,11 +12,12 @@ using Avalonia.Markup.Xaml;
 using Avalonia.Media;
 using Avalonia.Media.Imaging;
 using Avalonia.Platform;
-using Avalonia.ReactiveUI;
+using Avalonia.Platform.Storage;
 using Editor.Models;
 using Editor.ViewModels;
 using Editor.Views.Events;
 using ReactiveUI;
+using ReactiveUI.Avalonia;
 using SixLabors.ImageSharp;
 
 namespace Editor.Views;
@@ -28,7 +29,7 @@ public partial class MainWindow : ReactiveWindow<MainWindowViewModel>
     {
         InitializeComponent();
 #if DEBUG
-        this.AttachDevTools();
+        Application.Current!.AttachDeveloperTools();
 #endif
         this.WhenActivated(d =>
         {
@@ -49,8 +50,6 @@ public partial class MainWindow : ReactiveWindow<MainWindowViewModel>
         });
 
         ShowErrorEvent.AddClassHandler<MainWindow>(OnShowError);
-        OpenFileEvent.AddClassHandler<MainWindow>(OnOpenFile);
-        SaveFileEvent.AddClassHandler<MainWindow>(OnSaveFile);
         AskConfirmationEvent.AddClassHandler<MainWindow>(OnAskConfirmation);
         CloseRsiEvent.AddClassHandler<MainWindow>(OnCloseRsi);
         GetMainWindowEvent.AddClassHandler<MainWindow>(OnGetMainWindow);
@@ -60,12 +59,6 @@ public partial class MainWindow : ReactiveWindow<MainWindowViewModel>
 
     public static RoutedEvent<ShowErrorEvent> ShowErrorEvent { get; } =
         RoutedEvent.Register<MainWindow, ShowErrorEvent>(nameof(ShowErrorEvent), RoutingStrategies.Bubble);
-
-    public static RoutedEvent<OpenFileDialogEvent> OpenFileEvent { get; } =
-        RoutedEvent.Register<MainWindow, OpenFileDialogEvent>(nameof(OpenFileEvent), RoutingStrategies.Bubble);
-
-    public static RoutedEvent<SaveFileDialogEvent> SaveFileEvent { get; } =
-        RoutedEvent.Register<MainWindow, SaveFileDialogEvent>(nameof(SaveFileEvent), RoutingStrategies.Bubble);
 
     public static RoutedEvent<AskConfirmationEvent> AskConfirmationEvent { get; } =
         RoutedEvent.Register<MainWindow, AskConfirmationEvent>(nameof(AskConfirmationEvent), RoutingStrategies.Bubble);
@@ -104,89 +97,65 @@ public partial class MainWindow : ReactiveWindow<MainWindowViewModel>
         return true;
     }
 
-    private void NewRsi(InteractionContext<Unit, bool> interaction)
+    private void NewRsi(IInteractionContext<Unit, bool> interaction)
     {
         var confirm = DoNewRsi();
         interaction.SetOutput(confirm);
     }
 
-    private async Task OpenRsi(InteractionContext<Unit, string?> interaction)
+    private async Task OpenRsi(IInteractionContext<Unit, string?> interaction)
     {
-        var dialog = new OpenFolderDialog {Title = "Open RSI"};
-        var folder = await dialog.ShowAsync(this);
-
-        interaction.SetOutput(folder);
+        var folders = await StorageProvider.OpenFolderPickerAsync(new FolderPickerOpenOptions { Title = "Open RSI", AllowMultiple = false });
+        interaction.SetOutput(folders.Count > 0 ? folders[0].TryGetLocalPath() : null);
     }
 
-    private async Task OpenAllIn(InteractionContext<Unit, string?> interaction)
+    private async Task OpenAllIn(IInteractionContext<Unit, string?> interaction)
     {
-        var dialog = new OpenFolderDialog { Title = "Open All RSIs" };
-        var folder = await dialog.ShowAsync(this);
-
-        interaction.SetOutput(folder);
+        var folders = await StorageProvider.OpenFolderPickerAsync(new FolderPickerOpenOptions { Title = "Open All RSIs", AllowMultiple = false });
+        interaction.SetOutput(folders.Count > 0 ? folders[0].TryGetLocalPath() : null);
     }
 
-    private async Task SaveRsi(InteractionContext<Unit, string?> interaction)
+    private async Task SaveRsi(IInteractionContext<Unit, string?> interaction)
     {
-        var dialog = new OpenFolderDialog {Title = "Save RSI"};
-        var folder = await dialog.ShowAsync(this);
-
-        interaction.SetOutput(folder);
+        var folders = await StorageProvider.OpenFolderPickerAsync(new FolderPickerOpenOptions { Title = "Save RSI", AllowMultiple = false });
+        interaction.SetOutput(folders.Count > 0 ? folders[0].TryGetLocalPath() : null);
     }
 
-    private async Task ImportDmi(InteractionContext<Unit, string?> interaction)
+    private async Task ImportDmi(IInteractionContext<Unit, string?> interaction)
     {
-        var dialog = new OpenFileDialog
+        var files = await StorageProvider.OpenFilePickerAsync(new FilePickerOpenOptions
         {
             Title = "Import DMI",
             AllowMultiple = false,
-            Filters = new List<FileDialogFilter>
+            FileTypeFilter = new List<FilePickerFileType>
             {
-                new()
-                {
-                    Name = "DMI Files",
-                    Extensions = new List<string> { "dmi"}
-                }
+                new FilePickerFileType("DMI Files") { Patterns = new List<string> { "*.dmi" } }
             }
-        };
-        var files = await dialog.ShowAsync(this);
-
-        interaction.SetOutput(files?.Length > 0 ? files[0] : string.Empty);
+        });
+        interaction.SetOutput(files.Count > 0 ? files[0].TryGetLocalPath() : string.Empty);
     }
 
-    private async Task ImportImage(InteractionContext<Unit, string?> interaction)
+    private async Task ImportImage(IInteractionContext<Unit, string?> interaction)
     {
-        var dialog = new OpenFileDialog
+        var files = await StorageProvider.OpenFilePickerAsync(new FilePickerOpenOptions
         {
             Title = "Import Image",
             AllowMultiple = false,
-            Filters = new List<FileDialogFilter>
+            FileTypeFilter = new List<FilePickerFileType>
             {
-                new()
-                {
-                    Name = "Image Files",
-                    Extensions = new List<string> { "dmi", "gif", "png" }
-                }
+                new FilePickerFileType("Image Files") { Patterns = new List<string> { "*.dmi", "*.gif", "*.png" } }
             }
-        };
-        var files = await dialog.ShowAsync(this);
-
-        interaction.SetOutput(files?.Length > 0 ? files[0] : string.Empty);
+        });
+        interaction.SetOutput(files.Count > 0 ? files[0].TryGetLocalPath() : string.Empty);
     }
 
-    private async Task ImportDmiFolder(InteractionContext<Unit, string?> interaction)
+    private async Task ImportDmiFolder(IInteractionContext<Unit, string?> interaction)
     {
-        var dialog = new OpenFolderDialog
-        {
-            Title = "Convert directory",
-        };
-
-        var folder = await dialog.ShowAsync(this);
-
-        interaction.SetOutput(folder);
+        var folders = await StorageProvider.OpenFolderPickerAsync(new FolderPickerOpenOptions { Title = "Convert directory", AllowMultiple = false });
+        interaction.SetOutput(folders.Count > 0 ? folders[0].TryGetLocalPath() : null);
     }
 
-    private async Task OpenPreferences(InteractionContext<Unit, Unit> arg)
+    private async Task OpenPreferences(IInteractionContext<Unit, Unit> arg)
     {
         if (ViewModel == null)
         {
@@ -197,29 +166,28 @@ public partial class MainWindow : ReactiveWindow<MainWindowViewModel>
         var dialog = new PreferencesWindow() {DataContext = vm};
         var preferences = await dialog.ShowDialog<Preferences?>(this);
 
-        var assetLoader = AvaloniaLocator.Current.GetService<IAssetLoader>()!;
         if (preferences?.EasterEggs == true)
         {
-            Icon = new WindowIcon(assetLoader.Open(new Uri("avares://Editor/Assets/joke-logo.ico")));
-            Background = new ImageBrush(new Bitmap(assetLoader.Open(new Uri("avares://Editor/Assets/joke-background.png"))));
+            Icon = new WindowIcon(AssetLoader.Open(new Uri("avares://Editor/Assets/joke-logo.ico")));
+            Background = new ImageBrush(new Bitmap(AssetLoader.Open(new Uri("avares://Editor/Assets/joke-background.png"))));
         }
         else
         {
-            Icon = new WindowIcon(assetLoader.Open(new Uri("avares://Editor/Assets/logo.ico")));
+            Icon = new WindowIcon(AssetLoader.Open(new Uri("avares://Editor/Assets/logo.ico")));
             Background = null;
         }
 
         arg.SetOutput(Unit.Default);
     }
 
-    private async Task ShowError(InteractionContext<ErrorWindowViewModel, Unit> interaction)
+    private async Task ShowError(IInteractionContext<ErrorWindowViewModel, Unit> interaction)
     {
         var dialog = new ErrorWindow {DataContext = interaction.Input};
         await dialog.ShowDialog(this);
         interaction.SetOutput(Unit.Default);
     }
 
-    private async Task ChangeAllLicenses(InteractionContext<Unit, string?> arg)
+    private async Task ChangeAllLicenses(IInteractionContext<Unit, string?> arg)
     {
         var vm = new TextInputWindowViewModel("Change all licenses", "Change all open RSI licenses to:");
         var dialog = new TextInputWindow {DataContext = vm};
@@ -233,7 +201,7 @@ public partial class MainWindow : ReactiveWindow<MainWindowViewModel>
         arg.SetOutput(vm.SubmittedText);
     }
 
-    private async Task ChangeAllCopyrights(InteractionContext<Unit, string?> arg)
+    private async Task ChangeAllCopyrights(IInteractionContext<Unit, string?> arg)
     {
         var vm = new TextInputWindowViewModel("Change all copyrights", "Change all open RSI copyrights to:");
         var dialog = new TextInputWindow {DataContext = vm};
@@ -247,7 +215,7 @@ public partial class MainWindow : ReactiveWindow<MainWindowViewModel>
         arg.SetOutput(vm.SubmittedText);
     }
 
-    private async Task ReplaceAllStateNames(InteractionContext<string, (string, string)?> arg)
+    private async Task ReplaceAllStateNames(IInteractionContext<string, (string, string)?> arg)
     {
         var vm = new TextReplaceWindowViewModel(arg.Input);
         var dialog = new TextReplaceWindow {DataContext = vm};
@@ -263,30 +231,32 @@ public partial class MainWindow : ReactiveWindow<MainWindowViewModel>
 
     private async void DropEvent(object? sender, DragEventArgs e)
     {
-        var fileNames = e.Data.GetFileNames();
-        if (ViewModel == null || fileNames == null)
+        var storageItems = e.DataTransfer.TryGetFiles();
+        if (ViewModel == null || storageItems == null)
         {
             return;
         }
 
-        var files = fileNames.ToArray();
         var rsiDmiToOpen = new List<string>();
 
-        foreach (var file in files)
+        foreach (var item in storageItems)
         {
-            if (File.GetAttributes(file).HasFlag(FileAttributes.Directory))
+            var path = item.TryGetLocalPath();
+            if (path == null) continue;
+
+            if (item is IStorageFolder)
             {
-                rsiDmiToOpen.Add(file);
+                rsiDmiToOpen.Add(path);
                 continue;
             }
 
-            switch (Path.GetExtension(file))
+            switch (Path.GetExtension(path))
             {
                 case ".dmi":
-                    rsiDmiToOpen.Add(file);
+                    rsiDmiToOpen.Add(path);
                     break;
                 case ".png":
-                    ViewModel.CurrentOpenRsi?.CreateNewState(file);
+                    ViewModel.CurrentOpenRsi?.CreateNewState(path);
                     break;
             }
         }
@@ -309,25 +279,6 @@ public partial class MainWindow : ReactiveWindow<MainWindowViewModel>
     {
         var dialog = new ErrorWindow {DataContext = args.ViewModel};
         await dialog.ShowDialog(this);
-    }
-
-    private void OnOpenFile(MainWindow window, OpenFileDialogEvent args)
-    {
-        var files = args.Dialog.ShowAsync(window).Result;
-        if (files != null)
-        {
-            args.Files = files;
-        }
-    }
-
-    private async void OnSaveFile(MainWindow window, SaveFileDialogEvent args)
-    {
-        var path = await args.Dialog.ShowAsync(window);
-
-        if (path != null)
-        {
-            await args.Png.SaveAsPngAsync(path);
-        }
     }
 
     private void OnAskConfirmation(MainWindow window, AskConfirmationEvent args)

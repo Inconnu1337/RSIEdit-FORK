@@ -12,9 +12,6 @@
         DragDrop.AllowDrop="True"
         Height="776"
         x:DataType="vm:MainWindowViewModel" >
-    <Window.DataContext>
-        <vm:MainWindowViewModel/>
-    </Window.DataContext>
     <Window.KeyBindings>
         <KeyBinding Gesture="Ctrl+N"
                     Command="{Binding New}"/>
@@ -92,9 +89,9 @@
             </MenuItem>
         </Menu>
         <Grid>
-            <TabControl Items="{Binding OpenRsis}" SelectedIndex="{Binding SelectedIndex, Mode=TwoWay}">
+            <TabControl ItemsSource="{Binding OpenRsis}" SelectedIndex="{Binding SelectedIndex, Mode=TwoWay}">
                 <TabControl.ItemTemplate>
-                    <DataTemplate>
+                    <DataTemplate x:DataType="vm:RsiItemViewModel">
                         <DockPanel>
                             <TextBlock DockPanel.Dock="Left" Margin="0 0 5 0"
                                        Text="{Binding Title}" Width="150"
