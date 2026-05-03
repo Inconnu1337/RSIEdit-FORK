@@ -1,94 +1,95 @@
-﻿name: Publish Release
+name: Publish Release
 
 on:
-  push:
-    tags:
-    - 'v*'
+  workflow_dispatch:
 
 jobs:
-  publish:
+  prepare:
     runs-on: ubuntu-latest
-
+    if: github.actor == github.repository_owner
+    outputs:
+      version: ${{ steps.version.outputs.version }}
     steps:
-    - name: Checkout code
-      uses: actions/checkout@v3
-      with:
-        submodules: 'recursive'
-    - name: Setup .NET Core
-      uses: actions/setup-dotnet@v3
-      with:
-        dotnet-version: 9.0.x
+      - name: Calculate next version
+        id: version
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const { data: releases } = await github.rest.repos.listReleases({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              per_page: 1
+            });
 
-    - name: Create Windows Release
-      run: dotnet publish Editor -c Release -r win-x64 -p:PublishSingleFile=true --self-contained true -p:UseAppHost=true -o Publish/Editor_Windows
+            let version;
+            if (releases.length === 0) {
+              version = '0.1.0';
+            } else {
+              const tag = releases[0].tag_name.replace(/^v/, '');
+              const [major, minor, patch] = tag.split('.').map(Number);
+              version = `${major}.${minor}.${patch + 1}`;
+            }
 
-    - name: Create Linux Release
-      run: dotnet publish Editor -c Release -r linux-x64 -p:PublishSingleFile=true --self-contained true -p:UseAppHost=true -o Publish/Editor_Linux
+            core.setOutput('version', version);
+            console.log(`Next version: v${version}`);
 
-    - name: Create MacOS Release
-      run: dotnet publish Editor -c Release -r osx-x64 -p:PublishSingleFile=true --self-contained true -p:UseAppHost=true -o Publish/Editor_macOS
+  build:
+    needs: prepare
+    strategy:
+      matrix:
+        include:
+          - os: windows-latest
+            rid: win-x64
+          - os: ubuntu-latest
+            rid: linux-x64
+          - os: macos-13
+            rid: osx-x64
+    runs-on: ${{ matrix.os }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          submodules: 'recursive'
 
-    - name: Archive Windows Release
-      uses: thedoctor0/zip-release@master
-      with:
-        filename: 'Editor_Windows.zip'
-        path: 'Editor_Windows'
-        directory: './Publish'
-        type: 'zip'
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '10.0.x'
 
-    - name: Archive Linux Release
-      uses: thedoctor0/zip-release@master
-      with:
-        filename: 'Editor_Linux.zip'
-        path: 'Editor_Linux'
-        directory: './Publish'
-        type: 'zip'
+      - name: Publish
+        run: dotnet publish Editor/Editor.csproj -c Release -r ${{ matrix.rid }} -p:PublishSingleFile=true --self-contained true -p:UseAppHost=true -p:Version=${{ needs.prepare.outputs.version }} -o publish/${{ matrix.rid }}
 
-    - name: Archive MacOS Release
-      uses: thedoctor0/zip-release@master
-      with:
-        filename: 'Editor_macOS.zip'
-        path: 'Editor_macOS'
-        directory: './Publish'
-        type: 'zip'
+      - name: Archive (Windows)
+        if: runner.os == 'Windows'
+        shell: pwsh
+        run: Compress-Archive -Path publish/${{ matrix.rid }}/* -DestinationPath RSIEdit-${{ matrix.rid }}.zip
 
-    - name: Create Release
-      id: create_release
-      uses: actions/create-release@v1
-      env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      with:
-        tag_name: ${{ github.ref }}
-        release_name: Release ${{ github.ref }}
-        draft: false
-        prerelease: false
+      - name: Archive (Unix)
+        if: runner.os != 'Windows'
+        run: zip -r RSIEdit-${{ matrix.rid }}.zip publish/${{ matrix.rid }}/
 
-    - name: Upload Windows Release
-      uses: actions/upload-release-asset@v1
-      env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      with:
-        upload_url: ${{ steps.create_release.outputs.upload_url }}
-        asset_path: ./Publish/Editor_Windows.zip
-        asset_name: Editor_Windows.zip
-        asset_content_type: application/zip
+      - name: Upload artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: RSIEdit-${{ matrix.rid }}
+          path: RSIEdit-${{ matrix.rid }}.zip
 
-    - name: Upload Linux Release
-      uses: actions/upload-release-asset@v1
-      env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      with:
-        upload_url: ${{ steps.create_release.outputs.upload_url }}
-        asset_path: ./Publish/Editor_Linux.zip
-        asset_name: Editor_Linux.zip
-        asset_content_type: application/zip
+  release:
+    needs: [prepare, build]
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - name: Download all artifacts
+        uses: actions/download-artifact@v4
 
-    - name: Upload MacOS Release
-      uses: actions/upload-release-asset@v1
-      env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      with:
-        upload_url: ${{ steps.create_release.outputs.upload_url }}
-        asset_path: ./Publish/Editor_macOS.zip
-        asset_name: Editor_macOS.zip
-        asset_content_type: application/zip
+      - name: Create GitHub Release
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: v${{ needs.prepare.outputs.version }}
+          name: RSIEdit v${{ needs.prepare.outputs.version }}
+          draft: false
+          prerelease: false
+          files: |
+            RSIEdit-win-x64/RSIEdit-win-x64.zip
+            RSIEdit-linux-x64/RSIEdit-linux-x64.zip
+            RSIEdit-osx-x64/RSIEdit-osx-x64.zip
