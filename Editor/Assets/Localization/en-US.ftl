@@ -1,0 +1,73 @@
+app-locale = en-US
+
+loc-menu-file = _File
+loc-menu-file-new = _New RSI
+loc-menu-file-open = _Open RSI Folder...
+loc-menu-file-save = _Save
+loc-menu-file-save-as = Save _As...
+loc-menu-file-save-all = Save All
+loc-menu-file-close = Close
+loc-menu-file-open-all-in = Open All RSIs from Folder...
+loc-menu-file-save-all-to = Save All RSIs to Folder...
+loc-menu-file-convert-dmi = _Import from DMI...
+loc-menu-file-convert-dmi-file = Single File (.dmi)...
+loc-menu-file-convert-dmi-folder = Entire Folder (bulk)...
+loc-menu-file-import = _Import Image into State...
+loc-menu-file-reopen-last = _Reopen Last Folder
+loc-menu-file-open-current-folder = Reveal RSI Folder in Explorer
+loc-menu-file-reimport-copyrights = Re-import Copyrights from .dmi Sources
+loc-menu-file-preferences = _Preferences...
+
+loc-menu-edit = _Edit
+loc-menu-edit-copy-states = Copy Selected States
+loc-menu-edit-paste = Paste States / .dmi URL
+loc-menu-edit-undo = _Undo
+loc-menu-edit-redo = _Redo
+loc-menu-edit-undo-all = Undo All
+loc-menu-edit-deselect-all = Deselect All States
+loc-menu-edit-dir1 = 1 Direction (no directional)
+loc-menu-edit-dir4 = 4 Directions (N · S · E · W)
+loc-menu-edit-dir8 = 8 Directions (N · S · E · W + diagonals)
+loc-menu-edit-change-licenses = Set License for All States...
+loc-menu-edit-change-copyrights = Set Copyright for All States...
+loc-menu-edit-reformat-names = Normalize All State Names
+loc-menu-edit-sort-alpha = Sort States Alphabetically
+loc-menu-edit-replace-names = Find & Replace State Names...
+loc-menu-edit-replace-names-all = Find & Replace in All Open RSIs...
+
+loc-state-license = License
+loc-state-copyright = Copyright
+loc-state-size-x = Size X
+loc-state-size-y = Size Y
+loc-state-search = Search
+loc-state-folder = Folder
+loc-state-ctx-add = Add new state
+loc-state-ctx-import = Import Image into State
+loc-state-ctx-export = Export as PNG
+loc-state-ctx-delete = Delete Selected
+loc-state-ctx-delete-others = Delete All Other States
+
+loc-prefs-title = Preferences
+loc-prefs-section-defaults = DEFAULTS
+loc-prefs-default-license = License
+loc-prefs-default-copyright = Copyright
+loc-prefs-section-github = GITHUB
+loc-prefs-github-token = API Token
+loc-prefs-show-token = Show
+loc-prefs-section-language = LANGUAGE
+loc-prefs-language = Language
+loc-prefs-section-output = OUTPUT
+loc-prefs-minify-json = Minify JSON
+loc-prefs-indentation = Indentation
+
+loc-common-save = Save
+loc-common-cancel = Cancel
+loc-common-accept = Accept
+loc-common-yes = Yes
+loc-common-no = No
+loc-common-close-tab = Close tab
+
+loc-dialog-confirm-title = Confirm
+loc-dialog-error-title = Error
+loc-dialog-replace-replace = Replace
+loc-dialog-replace-with = With

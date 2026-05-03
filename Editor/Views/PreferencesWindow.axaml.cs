@@ -1,9 +1,12 @@
-﻿using System.IO;
+﻿using System;
+using System.IO;
 using System.Reactive;
+using System.Runtime.InteropServices;
 using System.Text.Json;
 using System.Threading.Tasks;
 using Avalonia;
 using Avalonia.Markup.Xaml;
+using Editor.Localization;
 using Editor.Models;
 using Editor.ViewModels;
 using ReactiveUI;
@@ -13,6 +16,16 @@ namespace Editor.Views;
 
 public partial class PreferencesWindow : ReactiveWindow<PreferencesWindowViewModel>
 {
+    private const int GwlStyle = -16;
+    private const long WsMinimizeBox = 0x00020000L;
+    private const long WsMaximizeBox = 0x00010000L;
+
+    [DllImport("user32.dll", SetLastError = true)]
+    private static extern nint GetWindowLongPtr(nint hWnd, int nIndex);
+
+    [DllImport("user32.dll", SetLastError = true)]
+    private static extern nint SetWindowLongPtr(nint hWnd, int nIndex, nint dwNewLong);
+
     public PreferencesWindow()
     {
         InitializeComponent();
@@ -30,6 +43,17 @@ public partial class PreferencesWindow : ReactiveWindow<PreferencesWindowViewMod
 #pragma warning restore IL2026
     }
 
+    protected override void OnOpened(EventArgs e)
+    {
+        base.OnOpened(e);
+
+        var handle = TryGetPlatformHandle()?.Handle ?? IntPtr.Zero;
+        if (handle == IntPtr.Zero) return;
+
+        var style = GetWindowLongPtr(handle, GwlStyle);
+        SetWindowLongPtr(handle, GwlStyle, style & ~(nint)(WsMinimizeBox | WsMaximizeBox));
+    }
+
     private void InitializeComponent()
     {
         AvaloniaXamlLoader.Load(this);
@@ -43,6 +67,7 @@ public partial class PreferencesWindow : ReactiveWindow<PreferencesWindowViewMod
 
         JsonSerializer.Serialize(metaJsonFile, preferences, PreferencesJsonContext.Default.Preferences);
 
+        LocalizationManager.LoadLanguage(preferences.Language);
         Close(preferences);
         arg.SetOutput(Unit.Default);
     }

@@ -4,13 +4,48 @@
              x:Class="Editor.App"
              RequestedThemeVariant="Dark">
 
-    <!--
-    <Application.DataTemplates>
-        <local:ViewLocator/>
-    </Application.DataTemplates>
-    -->
+    <Application.Resources>
+        <ResourceDictionary>
+            <Color x:Key="SystemAccentColor">#7B68EE</Color>
+            <Color x:Key="SystemAccentColorLight1">#9B8EF4</Color>
+            <Color x:Key="SystemAccentColorLight2">#BBB0F8</Color>
+            <Color x:Key="SystemAccentColorDark1">#5B4ED6</Color>
+            <Color x:Key="SystemAccentColorDark2">#3B30B0</Color>
+
+            <SolidColorBrush x:Key="AppBg">#16161E</SolidColorBrush>
+            <SolidColorBrush x:Key="CardBg">#21212E</SolidColorBrush>
+            <SolidColorBrush x:Key="CardBorder">#30304A</SolidColorBrush>
+            <SolidColorBrush x:Key="SectionBg">#1C1C28</SolidColorBrush>
+            <SolidColorBrush x:Key="SeparatorBrush">#28283A</SolidColorBrush>
+            <SolidColorBrush x:Key="MutedFg">#7070A0</SolidColorBrush>
+            <SolidColorBrush x:Key="ImageAreaBg">#0E0E18</SolidColorBrush>
+        </ResourceDictionary>
+    </Application.Resources>
 
     <Application.Styles>
         <FluentTheme />
+
+        <Style Selector="TextBlock.label">
+            <Setter Property="Foreground" Value="{DynamicResource MutedFg}"/>
+            <Setter Property="VerticalAlignment" Value="Center"/>
+            <Setter Property="FontSize" Value="12"/>
+        </Style>
+
+        <Style Selector="Button.tab-close">
+            <Setter Property="Padding" Value="0"/>
+            <Setter Property="Width" Value="20"/>
+            <Setter Property="Height" Value="20"/>
+            <Setter Property="Background" Value="Transparent"/>
+            <Setter Property="BorderThickness" Value="0"/>
+            <Setter Property="CornerRadius" Value="4"/>
+            <Setter Property="FontSize" Value="13"/>
+            <Setter Property="Foreground" Value="{DynamicResource MutedFg}"/>
+            <Setter Property="VerticalContentAlignment" Value="Center"/>
+            <Setter Property="HorizontalContentAlignment" Value="Center"/>
+        </Style>
+
+        <Style Selector="Button.tab-close:pointerover /template/ ContentPresenter">
+            <Setter Property="Background" Value="#3C3C58"/>
+        </Style>
     </Application.Styles>
 </Application>

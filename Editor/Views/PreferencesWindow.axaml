@@ -1,49 +1,145 @@
-﻿<Window xmlns="https://github.com/avaloniaui"
+<Window xmlns="https://github.com/avaloniaui"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:vm="clr-namespace:Editor.ViewModels"
-        mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+        mc:Ignorable="d"
         x:Class="Editor.Views.PreferencesWindow"
         WindowStartupLocation="CenterOwner"
-        Width="600"
-        Height="300"
-        Title="Preferences"
+        Width="520"
+        Height="520"
+        CanResize="False"
+        Title="{DynamicResource loc-prefs-title}"
         Icon="/Assets/logo.ico"
+        Background="{DynamicResource AppBg}"
         x:DataType="vm:PreferencesWindowViewModel">
-    <StackPanel Orientation="Vertical" HorizontalAlignment="Center" VerticalAlignment="Center" Spacing="10">
-        <StackPanel Orientation="Horizontal" Spacing="10">
-            <TextBlock Text="Default License:" VerticalAlignment="Center" Width="125" />
-            <TextBox Text="{Binding DefaultLicense}" Width="250" />
+
+    <Grid RowDefinitions="Auto, *, Auto" Margin="28 22 28 20">
+
+        <!-- Title -->
+        <TextBlock Grid.Row="0"
+                   Text="{DynamicResource loc-prefs-title}"
+                   FontSize="17"
+                   FontWeight="SemiBold"
+                   Margin="0 0 0 18"/>
+
+        <!-- Settings -->
+        <StackPanel Grid.Row="1" Spacing="14">
+
+            <!-- Section: Defaults -->
+            <StackPanel Spacing="10">
+                <StackPanel Spacing="4">
+                    <TextBlock Text="{DynamicResource loc-prefs-section-defaults}"
+                               FontSize="10" FontWeight="SemiBold"
+                               Foreground="{DynamicResource AccentBrush}"
+                               LetterSpacing="1.5"/>
+                    <Rectangle Height="1" Fill="{DynamicResource SeparatorBrush}"/>
+                </StackPanel>
+                <Grid ColumnDefinitions="130, *" RowDefinitions="Auto, Auto" RowSpacing="8">
+                    <TextBlock Classes="label" Text="{DynamicResource loc-prefs-default-license}"
+                               Grid.Row="0" Grid.Column="0" VerticalAlignment="Center"/>
+                    <TextBox Grid.Row="0" Grid.Column="1" Text="{Binding DefaultLicense}"
+                             Watermark="e.g. CC-BY-SA-3.0"/>
+                    <TextBlock Classes="label" Text="{DynamicResource loc-prefs-default-copyright}"
+                               Grid.Row="1" Grid.Column="0" VerticalAlignment="Center"/>
+                    <TextBox Grid.Row="1" Grid.Column="1" Text="{Binding DefaultCopyright}"
+                             Watermark="e.g. github.com/your-repo"/>
+                </Grid>
+            </StackPanel>
+
+            <!-- Section: GitHub -->
+            <StackPanel Spacing="10">
+                <StackPanel Spacing="4">
+                    <TextBlock Text="{DynamicResource loc-prefs-section-github}"
+                               FontSize="10" FontWeight="SemiBold"
+                               Foreground="{DynamicResource AccentBrush}"
+                               LetterSpacing="1.5"/>
+                    <Rectangle Height="1" Fill="{DynamicResource SeparatorBrush}"/>
+                </StackPanel>
+                <Grid ColumnDefinitions="130, *" RowSpacing="8">
+                    <TextBlock Classes="label" Text="{DynamicResource loc-prefs-github-token}"
+                               Grid.Column="0" VerticalAlignment="Center"
+                               ToolTip.Tip="Used when fetching .dmi files from GitHub. Needed for private repos. Saved as plain text — repo scope only."/>
+                    <StackPanel Grid.Column="1" Orientation="Horizontal" Spacing="8">
+                        <TextBox Text="{Binding GitHubToken}"
+                                 PasswordChar="*"
+                                 RevealPassword="{Binding RevealGitHubToken}"
+                                 Width="260"
+                                 Watermark="ghp_xxxxxxxxxxxx"/>
+                        <CheckBox Content="{DynamicResource loc-prefs-show-token}"
+                                  IsChecked="{Binding RevealGitHubToken}"
+                                  VerticalAlignment="Center"/>
+                    </StackPanel>
+                </Grid>
+            </StackPanel>
+
+            <!-- Section: Language -->
+            <StackPanel Spacing="10">
+                <StackPanel Spacing="4">
+                    <TextBlock Text="{DynamicResource loc-prefs-section-language}"
+                               FontSize="10" FontWeight="SemiBold"
+                               Foreground="{DynamicResource AccentBrush}"
+                               LetterSpacing="1.5"/>
+                    <Rectangle Height="1" Fill="{DynamicResource SeparatorBrush}"/>
+                </StackPanel>
+                <Grid ColumnDefinitions="130, *" RowSpacing="8">
+                    <TextBlock Classes="label" Text="{DynamicResource loc-prefs-language}"
+                               Grid.Column="0" VerticalAlignment="Center"/>
+                    <ComboBox Grid.Column="1"
+                              SelectedIndex="{Binding SelectedLanguageIndex}"
+                              HorizontalAlignment="Left"
+                              MinWidth="200">
+                        <ComboBoxItem Content="English (en-US)"/>
+                        <ComboBoxItem Content="Русский (ru-RU)"/>
+                    </ComboBox>
+                </Grid>
+            </StackPanel>
+
+            <!-- Section: Output -->
+            <StackPanel Spacing="10">
+                <StackPanel Spacing="4">
+                    <TextBlock Text="{DynamicResource loc-prefs-section-output}"
+                               FontSize="10" FontWeight="SemiBold"
+                               Foreground="{DynamicResource AccentBrush}"
+                               LetterSpacing="1.5"/>
+                    <Rectangle Height="1" Fill="{DynamicResource SeparatorBrush}"/>
+                </StackPanel>
+                <Grid ColumnDefinitions="130, *" RowDefinitions="Auto, Auto" RowSpacing="8">
+                    <TextBlock Classes="label" Text="{DynamicResource loc-prefs-minify-json}"
+                               Grid.Row="0" Grid.Column="0" VerticalAlignment="Center"/>
+                    <CheckBox Grid.Row="0" Grid.Column="1"
+                              IsChecked="{Binding MinifyJson}"
+                              VerticalAlignment="Center"/>
+                    <TextBlock Classes="label" Text="{DynamicResource loc-prefs-indentation}"
+                               Grid.Row="1" Grid.Column="0" VerticalAlignment="Center"/>
+                    <NumericUpDown Grid.Row="1" Grid.Column="1"
+                                   Value="{Binding Indentation}"
+                                   Minimum="0" Maximum="8"
+                                   Width="100"
+                                   HorizontalAlignment="Left"/>
+                </Grid>
+            </StackPanel>
+
         </StackPanel>
-        <StackPanel Orientation="Horizontal" Spacing="10">
-            <TextBlock Text="Default Copyright:" VerticalAlignment="Center" Width="125" />
-            <TextBox Text="{Binding DefaultCopyright}" Width="250" />
+
+        <!-- Buttons -->
+        <StackPanel Grid.Row="2"
+                    Orientation="Horizontal"
+                    HorizontalAlignment="Right"
+                    Spacing="8"
+                    Margin="0 16 0 0">
+            <Button Content="{DynamicResource loc-common-cancel}"
+                    Width="80"
+                    HorizontalContentAlignment="Center"
+                    Command="{Binding Cancel}"
+                    IsCancel="True"/>
+            <Button Classes="accent"
+                    Content="{DynamicResource loc-common-save}"
+                    Width="80"
+                    HorizontalContentAlignment="Center"
+                    Command="{Binding Save}"
+                    IsDefault="True"/>
         </StackPanel>
-        <StackPanel Orientation="Horizontal" Spacing="10">
-            <TextBlock Text="GitHub Token:&#x0a;(Hover for details)" VerticalAlignment="Center" Width="125"
-                       ToolTip.Tip="This is used to use the GitHub API when converting .dmi links from GitHub, instead of directly downloading the file.&#x0a;You will need to use this if the repository is private or requires logging into GitHub to access it.&#x0a;This token is saved in plain text to your computer in the .json file, if a malicious actor were to gain access to it, they would be able to steal your token and use the GitHub API with it.&#x0a;The token only needs repo scopes, to generate one, go to https://github.com/settings/tokens">
-            </TextBlock>
-            <TextBox Text="{Binding GitHubToken}" Width="250" PasswordChar="*"
-                     RevealPassword="{Binding RevealGitHubToken}" />
-            <TextBlock Text="Show token:" VerticalAlignment="Center" />
-            <CheckBox IsChecked="{Binding RevealGitHubToken}" />
-        </StackPanel>
-        <StackPanel Orientation="Horizontal" Spacing="10">
-            <TextBlock Text="Minify JSON:" VerticalAlignment="Center" Width="125" />
-            <CheckBox IsChecked="{Binding MinifyJson}" />
-        </StackPanel>
-        <StackPanel Orientation="Horizontal" Spacing="10">
-            <TextBlock Text="Easter Eggs:" VerticalAlignment="Center" Width="125" />
-            <CheckBox IsChecked="{Binding EasterEggs}" />
-        </StackPanel>
-        <StackPanel Orientation="Horizontal" Spacing="10">
-            <TextBlock Text="Indentation:" VerticalAlignment="Center" Width="125" />
-            <NumericUpDown Value="{Binding Indentation}" />
-        </StackPanel>
-        <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Spacing="10" Margin="0 30 0 0">
-            <Button Content="Save" IsDefault="True" Width="75" HorizontalContentAlignment="Center" Command="{Binding Save}" />
-            <Button Content="Cancel" Width="75" HorizontalContentAlignment="Center" Command="{Binding Cancel}" />
-        </StackPanel>
-    </StackPanel>
+
+    </Grid>
 </Window>

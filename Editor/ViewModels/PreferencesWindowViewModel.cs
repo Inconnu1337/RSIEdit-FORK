@@ -13,8 +13,8 @@ public class PreferencesWindowViewModel : ViewModelBase
     private string? _gitHubToken;
     private bool _revealGitHubToken;
     private bool _minifyJson;
-    private bool _easterEggs;
     private int _indentation;
+    private int _selectedLanguageIndex;
 
     public PreferencesWindowViewModel(Preferences preferences)
     {
@@ -23,8 +23,8 @@ public class PreferencesWindowViewModel : ViewModelBase
         DefaultCopyright = Preferences.DefaultCopyright;
         GitHubToken = Preferences.GitHubToken;
         MinifyJson = Preferences.MinifyJson;
-        EasterEggs = Preferences.EasterEggs;
         Indentation = Preferences.Indentation;
+        _selectedLanguageIndex = preferences.Language == "ru-RU" ? 1 : 0;
     }
 
     public Preferences Preferences { get; }
@@ -87,16 +87,16 @@ public class PreferencesWindowViewModel : ViewModelBase
         set => this.RaiseAndSetIfChanged(ref _minifyJson, value);
     }
 
-    public bool EasterEggs
-    {
-        get => _easterEggs;
-        set => this.RaiseAndSetIfChanged(ref _easterEggs, value);
-    }
-
     public int Indentation
     {
         get => _indentation;
         set => this.RaiseAndSetIfChanged(ref _indentation, value);
+    }
+
+    public int SelectedLanguageIndex
+    {
+        get => _selectedLanguageIndex;
+        set => this.RaiseAndSetIfChanged(ref _selectedLanguageIndex, value);
     }
 
     public async Task Save()
@@ -105,7 +105,8 @@ public class PreferencesWindowViewModel : ViewModelBase
         Preferences.DefaultCopyright = DefaultCopyright;
         Preferences.GitHubToken = GitHubToken;
         Preferences.MinifyJson = MinifyJson;
-        Preferences.EasterEggs = EasterEggs;
+        Preferences.Indentation = Indentation;
+        Preferences.Language = SelectedLanguageIndex == 1 ? "ru-RU" : "en-US";
 
         await SaveAction.Handle(Preferences);
     }

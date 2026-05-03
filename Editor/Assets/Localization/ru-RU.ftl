@@ -1,0 +1,73 @@
+app-locale = ru-RU
+
+loc-menu-file = _Файл
+loc-menu-file-new = _Новый RSI
+loc-menu-file-open = _Открыть папку RSI...
+loc-menu-file-save = _Сохранить
+loc-menu-file-save-as = Сохранить _как...
+loc-menu-file-save-all = Сохранить все
+loc-menu-file-close = Закрыть
+loc-menu-file-open-all-in = Открыть все RSI из папки...
+loc-menu-file-save-all-to = Сохранить все RSI в папку...
+loc-menu-file-convert-dmi = _Импортировать из DMI...
+loc-menu-file-convert-dmi-file = Один файл (.dmi)...
+loc-menu-file-convert-dmi-folder = Вся папка (массово)...
+loc-menu-file-import = _Импортировать изображение в состояние...
+loc-menu-file-reopen-last = _Переоткрыть последнюю папку
+loc-menu-file-open-current-folder = Открыть папку RSI в проводнике
+loc-menu-file-reimport-copyrights = Переимпортировать авторство из .dmi
+loc-menu-file-preferences = _Настройки...
+
+loc-menu-edit = _Правка
+loc-menu-edit-copy-states = Копировать выбранные состояния
+loc-menu-edit-paste = Вставить состояния / ссылку .dmi
+loc-menu-edit-undo = _Отменить
+loc-menu-edit-redo = _Повторить
+loc-menu-edit-undo-all = Отменить всё
+loc-menu-edit-deselect-all = Снять всё выделение
+loc-menu-edit-dir1 = 1 направление (без анимаций)
+loc-menu-edit-dir4 = 4 направления (С · Ю · В · З)
+loc-menu-edit-dir8 = 8 направлений (С · Ю · В · З + диагонали)
+loc-menu-edit-change-licenses = Задать лицензию для всех состояний...
+loc-menu-edit-change-copyrights = Задать авторство для всех состояний...
+loc-menu-edit-reformat-names = Нормализовать имена состояний
+loc-menu-edit-sort-alpha = Сортировать состояния по алфавиту
+loc-menu-edit-replace-names = Найти и заменить имена состояний...
+loc-menu-edit-replace-names-all = Найти и заменить во всех открытых RSI...
+
+loc-state-license = Лицензия
+loc-state-copyright = Авторство
+loc-state-size-x = Размер X
+loc-state-size-y = Размер Y
+loc-state-search = Поиск
+loc-state-folder = Папка
+loc-state-ctx-add = Добавить состояние
+loc-state-ctx-import = Импортировать изображение
+loc-state-ctx-export = Экспортировать PNG
+loc-state-ctx-delete = Удалить выбранные
+loc-state-ctx-delete-others = Удалить остальные состояния
+
+loc-prefs-title = Настройки
+loc-prefs-section-defaults = ОСНОВНЫЕ
+loc-prefs-default-license = Лицензия
+loc-prefs-default-copyright = Авторство
+loc-prefs-section-github = GITHUB
+loc-prefs-github-token = API-токен
+loc-prefs-show-token = Показать
+loc-prefs-section-language = ЯЗЫК
+loc-prefs-language = Язык
+loc-prefs-section-output = ВЫВОД
+loc-prefs-minify-json = Минифицировать JSON
+loc-prefs-indentation = Отступ
+
+loc-common-save = Сохранить
+loc-common-cancel = Отмена
+loc-common-accept = Принять
+loc-common-yes = Да
+loc-common-no = Нет
+loc-common-close-tab = Закрыть вкладку
+
+loc-dialog-confirm-title = Подтверждение
+loc-dialog-error-title = Ошибка
+loc-dialog-replace-replace = Заменить
+loc-dialog-replace-with = На

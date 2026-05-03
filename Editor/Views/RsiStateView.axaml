@@ -1,4 +1,4 @@
-﻿<UserControl xmlns="https://github.com/avaloniaui"
+<UserControl xmlns="https://github.com/avaloniaui"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
@@ -6,10 +6,23 @@
              mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
              x:Class="Editor.Views.RsiStateView"
              x:DataType="vm:RsiStateViewModel">
-    <StackPanel>
-        <Panel>
-            <Image Height="96" Width="96" Source="{Binding Image.Preview}" />
-        </Panel>
-        <TextBox Text="{Binding Name, Mode=TwoWay}" HorizontalAlignment="Center" Width="96" />
-    </StackPanel>
+    <Border CornerRadius="8"
+            Background="{DynamicResource CardBg}"
+            BorderBrush="{DynamicResource CardBorder}"
+            BorderThickness="1"
+            Margin="4" Padding="8 8 8 6">
+        <StackPanel Spacing="6">
+            <Border Width="96" Height="96"
+                    CornerRadius="5"
+                    Background="{DynamicResource ImageAreaBg}"
+                    ClipToBounds="True">
+                <Image Source="{Binding Image.Preview}" />
+            </Border>
+            <TextBox Text="{Binding Name, Mode=TwoWay}"
+                     HorizontalAlignment="Stretch"
+                     TextAlignment="Center"
+                     FontSize="11"
+                     Padding="4 3"/>
+        </StackPanel>
+    </Border>
 </UserControl>

@@ -26,11 +26,11 @@ public sealed class Preferences
     [JsonPropertyName("minifyJson")]
     public bool MinifyJson { get; set; } = false;
 
-    [JsonPropertyName("easterEggs")]
-    public bool EasterEggs { get; set; }
-
     [JsonPropertyName("indentation")]
     public int Indentation { get; set; } = 4;
+
+    [JsonPropertyName("language")]
+    public string Language { get; set; } = "en-US";
 }
 
 [JsonSourceGenerationOptions]

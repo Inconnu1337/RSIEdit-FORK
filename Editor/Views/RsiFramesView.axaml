@@ -1,4 +1,4 @@
-﻿<UserControl xmlns="https://github.com/avaloniaui"
+<UserControl xmlns="https://github.com/avaloniaui"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
@@ -6,60 +6,145 @@
              mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
              x:Class="Editor.Views.RsiFramesView"
              x:DataType="vm:RsiFramesViewModel">
-    <StackPanel Orientation="Horizontal" Spacing="24" Margin="12 0 0 0">
-        <StackPanel Orientation="Vertical" IsVisible="{Binding ShowFull}">
-            <Panel>
-                <Image Width="96" Height="96" Source="{Binding Full}" />
-            </Panel>
-            <TextBlock Text="Full" HorizontalAlignment="Center" MaxWidth="96" />
+    <ScrollViewer HorizontalScrollBarVisibility="Auto"
+                  VerticalScrollBarVisibility="Disabled">
+        <StackPanel Orientation="Horizontal" Spacing="8" Margin="12 8">
+
+            <Border CornerRadius="6"
+                    Background="{DynamicResource CardBg}"
+                    BorderBrush="{DynamicResource CardBorder}"
+                    BorderThickness="1"
+                    Padding="8 8 8 6"
+                    IsVisible="{Binding ShowFull}">
+                <StackPanel Spacing="5">
+                    <Border Width="96" Height="96" CornerRadius="4"
+                            Background="{DynamicResource ImageAreaBg}" ClipToBounds="True">
+                        <Image Source="{Binding Full}" />
+                    </Border>
+                    <TextBlock Text="Full" Classes="label" HorizontalAlignment="Center"/>
+                </StackPanel>
+            </Border>
+
+            <Border CornerRadius="6"
+                    Background="{DynamicResource CardBg}"
+                    BorderBrush="{DynamicResource CardBorder}"
+                    BorderThickness="1"
+                    Padding="8 8 8 6"
+                    IsVisible="{Binding ShowCardinals}">
+                <StackPanel Spacing="5">
+                    <Border Width="96" Height="96" CornerRadius="4"
+                            Background="{DynamicResource ImageAreaBg}" ClipToBounds="True">
+                        <Image Source="{Binding South}" />
+                    </Border>
+                    <TextBlock Text="South" Classes="label" HorizontalAlignment="Center"/>
+                </StackPanel>
+            </Border>
+
+            <Border CornerRadius="6"
+                    Background="{DynamicResource CardBg}"
+                    BorderBrush="{DynamicResource CardBorder}"
+                    BorderThickness="1"
+                    Padding="8 8 8 6"
+                    IsVisible="{Binding ShowCardinals}">
+                <StackPanel Spacing="5">
+                    <Border Width="96" Height="96" CornerRadius="4"
+                            Background="{DynamicResource ImageAreaBg}" ClipToBounds="True">
+                        <Image Source="{Binding North}" />
+                    </Border>
+                    <TextBlock Text="North" Classes="label" HorizontalAlignment="Center"/>
+                </StackPanel>
+            </Border>
+
+            <Border CornerRadius="6"
+                    Background="{DynamicResource CardBg}"
+                    BorderBrush="{DynamicResource CardBorder}"
+                    BorderThickness="1"
+                    Padding="8 8 8 6"
+                    IsVisible="{Binding ShowCardinals}">
+                <StackPanel Spacing="5">
+                    <Border Width="96" Height="96" CornerRadius="4"
+                            Background="{DynamicResource ImageAreaBg}" ClipToBounds="True">
+                        <Image Source="{Binding East}" />
+                    </Border>
+                    <TextBlock Text="East" Classes="label" HorizontalAlignment="Center"/>
+                </StackPanel>
+            </Border>
+
+            <Border CornerRadius="6"
+                    Background="{DynamicResource CardBg}"
+                    BorderBrush="{DynamicResource CardBorder}"
+                    BorderThickness="1"
+                    Padding="8 8 8 6"
+                    IsVisible="{Binding ShowCardinals}">
+                <StackPanel Spacing="5">
+                    <Border Width="96" Height="96" CornerRadius="4"
+                            Background="{DynamicResource ImageAreaBg}" ClipToBounds="True">
+                        <Image Source="{Binding West}" />
+                    </Border>
+                    <TextBlock Text="West" Classes="label" HorizontalAlignment="Center"/>
+                </StackPanel>
+            </Border>
+
+            <Border CornerRadius="6"
+                    Background="{DynamicResource CardBg}"
+                    BorderBrush="{DynamicResource CardBorder}"
+                    BorderThickness="1"
+                    Padding="8 8 8 6"
+                    IsVisible="{Binding ShowDiagonals}">
+                <StackPanel Spacing="5">
+                    <Border Width="96" Height="96" CornerRadius="4"
+                            Background="{DynamicResource ImageAreaBg}" ClipToBounds="True">
+                        <Image Source="{Binding SouthEast}" />
+                    </Border>
+                    <TextBlock Text="South East" Classes="label" HorizontalAlignment="Center"/>
+                </StackPanel>
+            </Border>
+
+            <Border CornerRadius="6"
+                    Background="{DynamicResource CardBg}"
+                    BorderBrush="{DynamicResource CardBorder}"
+                    BorderThickness="1"
+                    Padding="8 8 8 6"
+                    IsVisible="{Binding ShowDiagonals}">
+                <StackPanel Spacing="5">
+                    <Border Width="96" Height="96" CornerRadius="4"
+                            Background="{DynamicResource ImageAreaBg}" ClipToBounds="True">
+                        <Image Source="{Binding SouthWest}" />
+                    </Border>
+                    <TextBlock Text="South West" Classes="label" HorizontalAlignment="Center"/>
+                </StackPanel>
+            </Border>
+
+            <Border CornerRadius="6"
+                    Background="{DynamicResource CardBg}"
+                    BorderBrush="{DynamicResource CardBorder}"
+                    BorderThickness="1"
+                    Padding="8 8 8 6"
+                    IsVisible="{Binding ShowDiagonals}">
+                <StackPanel Spacing="5">
+                    <Border Width="96" Height="96" CornerRadius="4"
+                            Background="{DynamicResource ImageAreaBg}" ClipToBounds="True">
+                        <Image Source="{Binding NorthEast}" />
+                    </Border>
+                    <TextBlock Text="North East" Classes="label" HorizontalAlignment="Center"/>
+                </StackPanel>
+            </Border>
+
+            <Border CornerRadius="6"
+                    Background="{DynamicResource CardBg}"
+                    BorderBrush="{DynamicResource CardBorder}"
+                    BorderThickness="1"
+                    Padding="8 8 8 6"
+                    IsVisible="{Binding ShowDiagonals}">
+                <StackPanel Spacing="5">
+                    <Border Width="96" Height="96" CornerRadius="4"
+                            Background="{DynamicResource ImageAreaBg}" ClipToBounds="True">
+                        <Image Source="{Binding NorthWest}" />
+                    </Border>
+                    <TextBlock Text="North West" Classes="label" HorizontalAlignment="Center"/>
+                </StackPanel>
+            </Border>
+
         </StackPanel>
-        <StackPanel Orientation="Vertical" IsVisible="{Binding ShowCardinals}">
-            <Panel>
-                <Image Width="96" Height="96" Source="{Binding South}" />
-            </Panel>
-            <TextBlock Text="South" HorizontalAlignment="Center" MaxWidth="96" />
-        </StackPanel>
-        <StackPanel Orientation="Vertical" IsVisible="{Binding ShowCardinals}">
-            <Panel>
-                <Image Width="96" Height="96" Source="{Binding North}" />
-            </Panel>
-            <TextBlock Text="North" HorizontalAlignment="Center" MaxWidth="96" />
-        </StackPanel>
-        <StackPanel Orientation="Vertical" IsVisible="{Binding ShowCardinals}">
-            <Panel>
-                <Image Width="96" Height="96" Source="{Binding East}" />
-            </Panel>
-            <TextBlock Text="East" HorizontalAlignment="Center" MaxWidth="96" />
-        </StackPanel>
-        <StackPanel Orientation="Vertical" IsVisible="{Binding ShowCardinals}">
-            <Panel>
-                <Image Width="96" Height="96" Source="{Binding West}" />
-            </Panel>
-            <TextBlock Text="West" HorizontalAlignment="Center" MaxWidth="96" />
-        </StackPanel>
-        <StackPanel Orientation="Vertical" IsVisible="{Binding ShowDiagonals}">
-            <Panel>
-                <Image Width="96" Height="96" Source="{Binding SouthEast}" />
-            </Panel>
-            <TextBlock Text="South East" HorizontalAlignment="Center" MaxWidth="96" />
-        </StackPanel>
-        <StackPanel Orientation="Vertical" IsVisible="{Binding ShowDiagonals}">
-            <Panel>
-                <Image Width="96" Height="96" Source="{Binding SouthWest}" />
-            </Panel>
-            <TextBlock Text="South West" HorizontalAlignment="Center" MaxWidth="96" />
-        </StackPanel>
-        <StackPanel Orientation="Vertical" IsVisible="{Binding ShowDiagonals}">
-            <Panel>
-                <Image Width="96" Height="96" Source="{Binding NorthEast}" />
-            </Panel>
-            <TextBlock Text="North East" HorizontalAlignment="Center" MaxWidth="96" />
-        </StackPanel>
-        <StackPanel Orientation="Vertical" IsVisible="{Binding ShowDiagonals}">
-            <Panel>
-                <Image Width="96" Height="96" Source="{Binding NorthWest}" />
-            </Panel>
-            <TextBlock Text="North West" HorizontalAlignment="Center" MaxWidth="96" />
-        </StackPanel>
-    </StackPanel>
+    </ScrollViewer>
 </UserControl>

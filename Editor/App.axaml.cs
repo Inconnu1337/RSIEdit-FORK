@@ -9,6 +9,7 @@ using Avalonia.Logging;
 using Avalonia.Markup.Xaml;
 using Avalonia.Platform;
 using Editor.Converters;
+using Editor.Localization;
 using Editor.Models;
 using Editor.ViewModels;
 using Editor.Views;
@@ -75,6 +76,10 @@ public class App : Application
     public override void OnFrameworkInitializationCompleted()
     {
         RegisterServices();
+
+        var prefs = Locator.Current.GetService<Preferences>()
+            ?? throw new Exception("Preferences not registered");
+        LocalizationManager.LoadLanguage(prefs.Language);
 
         if (ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop)
         {

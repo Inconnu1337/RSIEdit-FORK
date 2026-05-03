@@ -11,93 +11,87 @@
         Title="RSI Editor"
         DragDrop.AllowDrop="True"
         Height="776"
+        Background="{DynamicResource AppBg}"
         x:DataType="vm:MainWindowViewModel" >
     <Window.KeyBindings>
-        <KeyBinding Gesture="Ctrl+N"
-                    Command="{Binding New}"/>
-        <KeyBinding Gesture="Ctrl+O"
-                    Command="{Binding Open}"/>
-        <KeyBinding Gesture="Ctrl+S"
-                    Command="{Binding Save}"/>
-        <KeyBinding Gesture="Ctrl+Shift+S"
-                    Command="{Binding SaveAs}"/>
-        <KeyBinding Gesture="Ctrl+W"
-                    Command="{Binding Close}"/>
-        <KeyBinding Gesture="Ctrl+V"
-                    Command="{Binding PasteCommand}"/>
-        <KeyBinding Gesture="Ctrl+I"
-                    Command="{Binding Import}"/>
-        <KeyBinding Gesture="Delete"
-                    Command="{Binding Delete}"/>
-        <KeyBinding Gesture="Ctrl+C"
-                    Command="{Binding CopyStatesCommand}"/>
-        <KeyBinding Gesture="Ctrl+Z"
-                    Command="{Binding Undo}"/>
-        <KeyBinding Gesture="Ctrl+Y"
-                    Command="{Binding Redo}"/>
-        <KeyBinding Gesture="Ctrl+Shift+Z"
-                    Command="{Binding Redo}"/>
-        <KeyBinding Gesture="Ctrl+,"
-                    Command="{Binding OpenPreferences}"/>
+        <KeyBinding Gesture="Ctrl+N"        Command="{Binding New}"/>
+        <KeyBinding Gesture="Ctrl+O"        Command="{Binding Open}"/>
+        <KeyBinding Gesture="Ctrl+S"        Command="{Binding Save}"/>
+        <KeyBinding Gesture="Ctrl+Shift+S"  Command="{Binding SaveAs}"/>
+        <KeyBinding Gesture="Ctrl+W"        Command="{Binding Close}"/>
+        <KeyBinding Gesture="Ctrl+V"        Command="{Binding PasteCommand}"/>
+        <KeyBinding Gesture="Ctrl+I"        Command="{Binding Import}"/>
+        <KeyBinding Gesture="Delete"        Command="{Binding Delete}"/>
+        <KeyBinding Gesture="Ctrl+C"        Command="{Binding CopyStatesCommand}"/>
+        <KeyBinding Gesture="Ctrl+Z"        Command="{Binding Undo}"/>
+        <KeyBinding Gesture="Ctrl+Y"        Command="{Binding Redo}"/>
+        <KeyBinding Gesture="Ctrl+Shift+Z"  Command="{Binding Redo}"/>
+        <KeyBinding Gesture="Ctrl+,"        Command="{Binding OpenPreferences}"/>
     </Window.KeyBindings>
     <DockPanel>
         <Menu DockPanel.Dock="Top" Name="Menu">
-            <MenuItem Header="_File">
-                <MenuItem Header="_New" Command="{Binding New}" InputGesture="Ctrl+N"/>
-                <MenuItem Header="_Open..." Command="{Binding Open}" InputGesture="Ctrl+O"/>
-                <MenuItem Header="_Save" IsEnabled="{Binding IsRsiOpen}" Command="{Binding Save}" InputGesture="Ctrl+S"/>
-                <MenuItem Header="Save _As..." IsEnabled="{Binding IsRsiOpen}" Command="{Binding SaveAs}" InputGesture="Ctrl+Shift+S"/>
-                <MenuItem Header="Save All" IsEnabled="{Binding IsRsiOpen}" Command="{Binding SaveAll}" />
-                <MenuItem Header="Close" Command="{Binding Close}" IsEnabled="{Binding IsRsiOpen}" InputGesture="Ctrl+W"/>
+            <MenuItem Header="{DynamicResource loc-menu-file}">
+                <MenuItem Header="{DynamicResource loc-menu-file-new}"              Command="{Binding New}"               InputGesture="Ctrl+N"/>
+                <MenuItem Header="{DynamicResource loc-menu-file-open}"             Command="{Binding Open}"              InputGesture="Ctrl+O"/>
+                <MenuItem Header="{DynamicResource loc-menu-file-save}"             IsEnabled="{Binding IsRsiOpen}"       Command="{Binding Save}"    InputGesture="Ctrl+S"/>
+                <MenuItem Header="{DynamicResource loc-menu-file-save-as}"          IsEnabled="{Binding IsRsiOpen}"       Command="{Binding SaveAs}"  InputGesture="Ctrl+Shift+S"/>
+                <MenuItem Header="{DynamicResource loc-menu-file-save-all}"         IsEnabled="{Binding IsRsiOpen}"       Command="{Binding SaveAll}"/>
+                <MenuItem Header="{DynamicResource loc-menu-file-close}"            IsEnabled="{Binding IsRsiOpen}"       Command="{Binding Close}"   InputGesture="Ctrl+W"/>
                 <Separator/>
-                <MenuItem Header="_Open All In..." Command="{Binding OpenAllIn}"/>
-                <MenuItem Header="Save All To" IsEnabled="{Binding IsRsiOpen}" Command="{Binding SaveAllTo}"/>
+                <MenuItem Header="{DynamicResource loc-menu-file-open-all-in}"      Command="{Binding OpenAllIn}"/>
+                <MenuItem Header="{DynamicResource loc-menu-file-save-all-to}"      IsEnabled="{Binding IsRsiOpen}"       Command="{Binding SaveAllTo}"/>
                 <Separator/>
-                <MenuItem Header="_Convert DMI...">
-                    <MenuItem Header="File" Command="{Binding SingleConvertDMI}"/>
-                    <MenuItem Header="Folder" Command="{Binding BulkConvertDMI}"/>
+                <MenuItem Header="{DynamicResource loc-menu-file-convert-dmi}">
+                    <MenuItem Header="{DynamicResource loc-menu-file-convert-dmi-file}"   Command="{Binding SingleConvertDMI}"/>
+                    <MenuItem Header="{DynamicResource loc-menu-file-convert-dmi-folder}" Command="{Binding BulkConvertDMI}"/>
                 </MenuItem>
-                <MenuItem Header="_Import..." Command="{Binding Import}" InputGesture="Ctrl+I"/>
-                <MenuItem Header="_Re-Open Last Folder" IsEnabled="{Binding HasLastOpenedElement}" Command="{Binding ReOpenLast}"/>
-                <MenuItem Header="_Open Current RSI Folder" IsEnabled="{Binding IsRsiOpen}" Command="{Binding OpenCurrentRsi}"/>
-                <MenuItem Header="_Re-import Copyright .dmi's" IsEnabled="{Binding IsRsiOpen}" Command="{Binding ReImportCurrentDmis}"/>
+                <MenuItem Header="{DynamicResource loc-menu-file-import}"               Command="{Binding Import}"                InputGesture="Ctrl+I"/>
+                <MenuItem Header="{DynamicResource loc-menu-file-reopen-last}"          IsEnabled="{Binding HasLastOpenedElement}" Command="{Binding ReOpenLast}"/>
+                <MenuItem Header="{DynamicResource loc-menu-file-open-current-folder}"  IsEnabled="{Binding IsRsiOpen}"           Command="{Binding OpenCurrentRsi}"/>
+                <MenuItem Header="{DynamicResource loc-menu-file-reimport-copyrights}"  IsEnabled="{Binding IsRsiOpen}"           Command="{Binding ReImportCurrentDmis}"/>
                 <Separator/>
-                <MenuItem Header="_Preferences..." Command="{Binding OpenPreferences}" InputGesture="Ctrl+,"/>
+                <MenuItem Header="{DynamicResource loc-menu-file-preferences}"          Command="{Binding OpenPreferences}"       InputGesture="Ctrl+,"/>
             </MenuItem>
-            <MenuItem Header="_Edit">
-                <MenuItem Header="_Copy States" IsEnabled="{Binding IsRsiOpen}" Command="{Binding CopyStatesCommand}" InputGesture="Ctrl+C"/>
-                <MenuItem Header="_Paste States or .dmi Link" Command="{Binding PasteCommand}" InputGesture="Ctrl+V"/>
-                <MenuItem Header="_Undo" IsEnabled="{Binding IsRsiOpen}" Command="{Binding Undo}" InputGesture="Ctrl+Z"/>
-                <MenuItem Header="_Redo" IsEnabled="{Binding IsRsiOpen}" Command="{Binding Redo}" InputGesture="Ctrl+Y"/>
+            <MenuItem Header="{DynamicResource loc-menu-edit}">
+                <MenuItem Header="{DynamicResource loc-menu-edit-copy-states}"      IsEnabled="{Binding IsRsiOpen}" Command="{Binding CopyStatesCommand}"        InputGesture="Ctrl+C"/>
+                <MenuItem Header="{DynamicResource loc-menu-edit-paste}"                                            Command="{Binding PasteCommand}"             InputGesture="Ctrl+V"/>
+                <MenuItem Header="{DynamicResource loc-menu-edit-undo}"             IsEnabled="{Binding IsRsiOpen}" Command="{Binding Undo}"                     InputGesture="Ctrl+Z"/>
+                <MenuItem Header="{DynamicResource loc-menu-edit-redo}"             IsEnabled="{Binding IsRsiOpen}" Command="{Binding Redo}"                     InputGesture="Ctrl+Y"/>
                 <Separator/>
-                <MenuItem Header="_Undo All" IsEnabled="{Binding IsRsiOpen}" Command="{Binding UndoAll}"/>
-                <MenuItem Header="_Deselect All" IsEnabled="{Binding IsRsiOpen}" Command="{Binding DeselectAll}"/>
+                <MenuItem Header="{DynamicResource loc-menu-edit-undo-all}"         IsEnabled="{Binding IsRsiOpen}" Command="{Binding UndoAll}"/>
+                <MenuItem Header="{DynamicResource loc-menu-edit-deselect-all}"     IsEnabled="{Binding IsRsiOpen}" Command="{Binding DeselectAll}"/>
                 <Separator/>
-                <MenuItem Header="1 Direction" IsEnabled="{Binding IsRsiOpen}" Command="{Binding Directions}" CommandParameter="{x:Static directions:DirectionType.None}"/>
-                <MenuItem Header="4 Directions (cardinal)" IsEnabled="{Binding IsRsiOpen}" Command="{Binding Directions}" CommandParameter="{x:Static directions:DirectionType.Cardinal}"/>
-                <MenuItem Header="8 Directions (diagonal)" IsEnabled="{Binding IsRsiOpen}" Command="{Binding Directions}" CommandParameter="{x:Static directions:DirectionType.Diagonal}"/>
+                <MenuItem Header="{DynamicResource loc-menu-edit-dir1}"  IsEnabled="{Binding IsRsiOpen}" Command="{Binding Directions}" CommandParameter="{x:Static directions:DirectionType.None}"/>
+                <MenuItem Header="{DynamicResource loc-menu-edit-dir4}"  IsEnabled="{Binding IsRsiOpen}" Command="{Binding Directions}" CommandParameter="{x:Static directions:DirectionType.Cardinal}"/>
+                <MenuItem Header="{DynamicResource loc-menu-edit-dir8}"  IsEnabled="{Binding IsRsiOpen}" Command="{Binding Directions}" CommandParameter="{x:Static directions:DirectionType.Diagonal}"/>
                 <Separator/>
-                <MenuItem Header="Change All Licenses..." IsEnabled="{Binding IsRsiOpen}" Command="{Binding ChangeAllLicenses}"/>
-                <MenuItem Header="Change All Copyrights..." IsEnabled="{Binding IsRsiOpen}" Command="{Binding ChangeAllCopyrights}"/>
+                <MenuItem Header="{DynamicResource loc-menu-edit-change-licenses}"    IsEnabled="{Binding IsRsiOpen}" Command="{Binding ChangeAllLicenses}"/>
+                <MenuItem Header="{DynamicResource loc-menu-edit-change-copyrights}"  IsEnabled="{Binding IsRsiOpen}" Command="{Binding ChangeAllCopyrights}"/>
                 <Separator/>
-                <MenuItem Header="Reformat all names" IsEnabled="{Binding IsRsiOpen}" Command="{Binding ReformatAllNames}"/>
+                <MenuItem Header="{DynamicResource loc-menu-edit-reformat-names}"     IsEnabled="{Binding IsRsiOpen}" Command="{Binding ReformatAllNames}"/>
                 <Separator/>
-                <MenuItem Header="Sort alphabetically" IsEnabled="{Binding IsRsiOpen}" Command="{Binding SortAlphabetically}"/>
+                <MenuItem Header="{DynamicResource loc-menu-edit-sort-alpha}"         IsEnabled="{Binding IsRsiOpen}" Command="{Binding SortAlphabetically}"/>
                 <Separator/>
-                <MenuItem Header="Replace all state names" IsEnabled="{Binding IsRsiOpen}" Command="{Binding ReplaceAllStateNames}"/>
-                <MenuItem Header="Replace all state names In All RSIs" IsEnabled="{Binding IsRsiOpen}" Command="{Binding ReplaceAllStateNamesAllRsis}"/>
+                <MenuItem Header="{DynamicResource loc-menu-edit-replace-names}"      IsEnabled="{Binding IsRsiOpen}" Command="{Binding ReplaceAllStateNames}"/>
+                <MenuItem Header="{DynamicResource loc-menu-edit-replace-names-all}"  IsEnabled="{Binding IsRsiOpen}" Command="{Binding ReplaceAllStateNamesAllRsis}"/>
             </MenuItem>
         </Menu>
         <Grid>
-            <TabControl ItemsSource="{Binding OpenRsis}" SelectedIndex="{Binding SelectedIndex, Mode=TwoWay}">
+            <TabControl ItemsSource="{Binding OpenRsis}"
+                        SelectedIndex="{Binding SelectedIndex, Mode=TwoWay}">
                 <TabControl.ItemTemplate>
                     <DataTemplate x:DataType="vm:RsiItemViewModel">
-                        <DockPanel>
-                            <TextBlock DockPanel.Dock="Left" Margin="0 0 5 0"
-                                       Text="{Binding Title}" Width="150"
-                                       FontStyle="{Binding TitleStyle}" />
-                            <Button DockPanel.Dock="Right" Command="{Binding Close}" Content="X"/>
-                        </DockPanel>
+                        <StackPanel Orientation="Horizontal" Spacing="6">
+                            <TextBlock Text="{Binding Title}"
+                                       Width="148"
+                                       FontStyle="{Binding TitleStyle}"
+                                       VerticalAlignment="Center"
+                                       TextTrimming="CharacterEllipsis"/>
+                            <Button Classes="tab-close"
+                                    Command="{Binding Close}"
+                                    Content="✕"
+                                    ToolTip.Tip="{DynamicResource loc-common-close-tab}"/>
+                        </StackPanel>
                     </DataTemplate>
                 </TabControl.ItemTemplate>
                 <TabControl.DataTemplates>

@@ -9,9 +9,6 @@ using Avalonia.Controls;
 using Avalonia.Input;
 using Avalonia.Interactivity;
 using Avalonia.Markup.Xaml;
-using Avalonia.Media;
-using Avalonia.Media.Imaging;
-using Avalonia.Platform;
 using Avalonia.Platform.Storage;
 using Editor.Models;
 using Editor.ViewModels;
@@ -166,21 +163,7 @@ public partial class MainWindow : ReactiveWindow<MainWindowViewModel>
 
         var vm = new PreferencesWindowViewModel(ViewModel.Preferences);
         var dialog = new PreferencesWindow() {DataContext = vm};
-        var preferences = await dialog.ShowDialog<Preferences?>(this);
-
-        if (preferences != null)
-        {
-            if (preferences.EasterEggs == true)
-            {
-                Icon = new WindowIcon(AssetLoader.Open(new Uri("avares://Editor/Assets/joke-logo.ico")));
-                Background = new ImageBrush(new Bitmap(AssetLoader.Open(new Uri("avares://Editor/Assets/joke-background.png"))));
-            }
-            else
-            {
-                Icon = new WindowIcon(AssetLoader.Open(new Uri("avares://Editor/Assets/logo.ico")));
-                Background = null;
-            }
-        }
+        await dialog.ShowDialog<Preferences?>(this);
 
         arg.SetOutput(Unit.Default);
     }
@@ -286,10 +269,10 @@ public partial class MainWindow : ReactiveWindow<MainWindowViewModel>
         await dialog.ShowDialog(this);
     }
 
-    private void OnAskConfirmation(MainWindow window, AskConfirmationEvent args)
+    private async void OnAskConfirmation(MainWindow window, AskConfirmationEvent args)
     {
         var dialog = new ConfirmationWindow {DataContext = args.ViewModel};
-        args.Confirmed = dialog.ShowDialog<bool>(this).Result;
+        args.Confirmed = await dialog.ShowDialog<bool>(this);
     }
 
     private async void OnCloseRsi(MainWindow window, CloseRsiEvent args)
