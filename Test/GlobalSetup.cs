@@ -3,7 +3,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using Avalonia;
 using Avalonia.Headless;
-using Avalonia.ReactiveUI;
+using ReactiveUI.Avalonia;
 using NUnit.Framework;
 
 namespace Test;
@@ -21,13 +21,13 @@ public class GlobalSetup
         var app = AppBuilder
             .Configure<TestApp>()
             .UsePlatformDetect()
-            .UseReactiveUI()
+            .UseReactiveUI(_ => { })
             .AfterSetup(builder =>
             {
                 App = (TestApp?) builder.Instance;
                 tcs.SetResult(SynchronizationContext.Current!);
             })
-            .UseHeadless();
+            .UseHeadless(new Avalonia.Headless.AvaloniaHeadlessPlatformOptions());
 
         var thread = new Thread(() => app.StartWithClassicDesktopLifetime(Array.Empty<string>()))
         {
