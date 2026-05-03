@@ -31,6 +31,7 @@ public partial class MainWindow : ReactiveWindow<MainWindowViewModel>
 #if DEBUG
         Application.Current!.AttachDeveloperTools();
 #endif
+#pragma warning disable IL2026
         this.WhenActivated(d =>
         {
             var vm = ViewModel!;
@@ -48,6 +49,7 @@ public partial class MainWindow : ReactiveWindow<MainWindowViewModel>
             d.Add(vm.ChangeAllCopyrightsAction.RegisterHandler(ChangeAllCopyrights));
             d.Add(vm.ReplaceAllStateNamesAction.RegisterHandler(ReplaceAllStateNames));
         });
+#pragma warning restore IL2026
 
         ShowErrorEvent.AddClassHandler<MainWindow>(OnShowError);
         AskConfirmationEvent.AddClassHandler<MainWindow>(OnAskConfirmation);
@@ -166,15 +168,18 @@ public partial class MainWindow : ReactiveWindow<MainWindowViewModel>
         var dialog = new PreferencesWindow() {DataContext = vm};
         var preferences = await dialog.ShowDialog<Preferences?>(this);
 
-        if (preferences?.EasterEggs == true)
+        if (preferences != null)
         {
-            Icon = new WindowIcon(AssetLoader.Open(new Uri("avares://Editor/Assets/joke-logo.ico")));
-            Background = new ImageBrush(new Bitmap(AssetLoader.Open(new Uri("avares://Editor/Assets/joke-background.png"))));
-        }
-        else
-        {
-            Icon = new WindowIcon(AssetLoader.Open(new Uri("avares://Editor/Assets/logo.ico")));
-            Background = null;
+            if (preferences.EasterEggs == true)
+            {
+                Icon = new WindowIcon(AssetLoader.Open(new Uri("avares://Editor/Assets/joke-logo.ico")));
+                Background = new ImageBrush(new Bitmap(AssetLoader.Open(new Uri("avares://Editor/Assets/joke-background.png"))));
+            }
+            else
+            {
+                Icon = new WindowIcon(AssetLoader.Open(new Uri("avares://Editor/Assets/logo.ico")));
+                Background = null;
+            }
         }
 
         arg.SetOutput(Unit.Default);

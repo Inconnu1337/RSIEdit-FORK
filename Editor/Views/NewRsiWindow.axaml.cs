@@ -15,11 +15,13 @@ public partial class ConfirmationWindow : ReactiveWindow<ConfirmationWindowViewM
 #if DEBUG
         Application.Current!.AttachDeveloperTools();
 #endif
+#pragma warning disable IL2026
         this.WhenActivated(d =>
         {
             d.Add(ViewModel!.ConfirmAction.RegisterHandler(Confirm));
             d.Add(ViewModel!.DeclineAction.RegisterHandler(Decline));
         });
+#pragma warning restore IL2026
     }
 
     private void Confirm(IInteractionContext<Unit, Unit> interaction)

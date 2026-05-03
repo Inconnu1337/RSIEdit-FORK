@@ -19,6 +19,7 @@ public partial class PreferencesWindow : ReactiveWindow<PreferencesWindowViewMod
 #if DEBUG
         Application.Current!.AttachDeveloperTools();
 #endif
+#pragma warning disable IL2026
         this.WhenActivated(d =>
         {
             var vm = ViewModel!;
@@ -26,6 +27,7 @@ public partial class PreferencesWindow : ReactiveWindow<PreferencesWindowViewMod
             d.Add(vm.SaveAction.RegisterHandler(Save));
             d.Add(vm.CancelAction.RegisterHandler(Cancel));
         });
+#pragma warning restore IL2026
     }
 
     private void InitializeComponent()

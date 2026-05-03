@@ -1,0 +1,16 @@
+{
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "name": "Build & Run (AOT Release)",
+            "type": "coreclr",
+            "request": "launch",
+            "preLaunchTask": "publish-aot",
+            "program": "${workspaceFolder}/Editor/bin/Release/net9.0/win-x64/publish/Editor.exe",
+            "args": [],
+            "cwd": "${workspaceFolder}",
+            "stopAtEntry": false,
+            "console": "internalConsole"
+        }
+    ]
+}

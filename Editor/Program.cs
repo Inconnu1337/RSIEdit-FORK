@@ -1,6 +1,5 @@
 ﻿using System;
 using System.IO;
-using System.Reflection;
 using Avalonia;
 using Avalonia.Logging;
 using ReactiveUI.Avalonia;
@@ -23,10 +22,7 @@ class Program
         {
             Logger.Sink?.Log(LogEventLevel.Fatal, "MAIN", null, e.ToString());
 
-            if (Assembly.GetEntryAssembly() is { } assembly)
-            {
-                File.WriteAllTextAsync(Path.Join(assembly.Location, "crash_report.txt"), e.ToString());
-            }
+            File.WriteAllText(Path.Join(AppContext.BaseDirectory, "crash_report.txt"), e.ToString());
 
             throw;
         }

@@ -1,0 +1,28 @@
+{
+    "version": "2.0.0",
+    "tasks": [
+        {
+            "label": "publish-aot",
+            "type": "process",
+            "command": "dotnet",
+            "args": [
+                "publish",
+                "Editor/Editor.csproj",
+                "-c", "Release",
+                "-r", "win-x64",
+                "-p:IlcOptimizationPreference=Speed",
+                "-p:IlcFoldIdenticalMethodBodies=true",
+                "-p:IlcInstructionSetExtensions=native"
+            ],
+            "group": {
+                "kind": "build",
+                "isDefault": true
+            },
+            "presentation": {
+                "reveal": "always",
+                "panel": "shared"
+            },
+            "problemMatcher": "$msCompile"
+        }
+    ]
+}

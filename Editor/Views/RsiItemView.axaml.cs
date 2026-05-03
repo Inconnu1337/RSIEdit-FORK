@@ -22,22 +22,20 @@ public partial class RsiItemView : ReactiveUserControl<RsiItemViewModel>
     {
         InitializeComponent();
 
+#pragma warning disable IL2026
         this.WhenActivated(d =>
         {
-            d.Add(this.WhenAnyValue(x => x.ViewModel)
-                .Subscribe(new AnonymousObserver<RsiItemViewModel?>(vm =>
-                {
-                    if (vm != null)
-                    {
-                        d.Add(vm.ImportImageInteraction.RegisterHandler(ImportImage));
-                        d.Add(vm.ExportPngInteraction.RegisterHandler(ExportPng));
-                        d.Add(vm.ErrorDialog.RegisterHandler(ShowError));
-                        d.Add(vm.CloseInteraction.RegisterHandler(Close));
-                        d.Add(vm.VisibleStates.Subscribe(new AnonymousObserver<RsiStateViewModel>(s => d.Add(s.Image.Preview))));
-                        d.Add(vm);
-                    }
-                })));
+            if (ViewModel is not { } vm)
+                return;
+
+            d.Add(vm.ImportImageInteraction.RegisterHandler(ImportImage));
+            d.Add(vm.ExportPngInteraction.RegisterHandler(ExportPng));
+            d.Add(vm.ErrorDialog.RegisterHandler(ShowError));
+            d.Add(vm.CloseInteraction.RegisterHandler(Close));
+            d.Add(vm.VisibleStates.Subscribe(new AnonymousObserver<RsiStateViewModel>(s => d.Add(s.Image.Preview))));
+            d.Add(vm);
         });
+#pragma warning restore IL2026
     }
 
     private void InitializeComponent()
