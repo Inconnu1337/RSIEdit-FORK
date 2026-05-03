@@ -42,8 +42,6 @@ jobs:
             rid: win-x64
           - os: ubuntu-latest
             rid: linux-x64
-          - os: macos-13
-            rid: osx-x64
     runs-on: ${{ matrix.os }}
     steps:
       - uses: actions/checkout@v4
@@ -63,8 +61,8 @@ jobs:
         shell: pwsh
         run: Compress-Archive -Path publish/${{ matrix.rid }}/* -DestinationPath RSIEdit-${{ matrix.rid }}.zip
 
-      - name: Archive (Unix)
-        if: runner.os != 'Windows'
+      - name: Archive (Linux)
+        if: runner.os == 'Linux'
         run: zip -r RSIEdit-${{ matrix.rid }}.zip publish/${{ matrix.rid }}/
 
       - name: Upload artifact
@@ -73,16 +71,41 @@ jobs:
           name: RSIEdit-${{ matrix.rid }}
           path: RSIEdit-${{ matrix.rid }}.zip
 
+  build-macos:
+    needs: prepare
+    runs-on: macos-13
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          submodules: 'recursive'
+
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '10.0.x'
+
+      - name: Publish
+        run: dotnet publish Editor/Editor.csproj -c Release -r osx-x64 -p:PublishSingleFile=true --self-contained true -p:UseAppHost=true -p:Version=${{ needs.prepare.outputs.version }} -o publish/osx-x64
+
+      - name: Archive
+        run: zip -r RSIEdit-osx-x64.zip publish/osx-x64/
+
+      - name: Upload artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: RSIEdit-osx-x64
+          path: RSIEdit-osx-x64.zip
+
   release:
     needs: [prepare, build]
     runs-on: ubuntu-latest
     permissions:
       contents: write
     steps:
-      - name: Download all artifacts
+      - name: Download artifacts
         uses: actions/download-artifact@v4
 
-      - name: Create GitHub Release
+      - name: Create GitHub Release (Windows + Linux)
         uses: softprops/action-gh-release@v2
         with:
           tag_name: v${{ needs.prepare.outputs.version }}
@@ -92,4 +115,20 @@ jobs:
           files: |
             RSIEdit-win-x64/RSIEdit-win-x64.zip
             RSIEdit-linux-x64/RSIEdit-linux-x64.zip
-            RSIEdit-osx-x64/RSIEdit-osx-x64.zip
+
+  upload-macos:
+    needs: [prepare, release, build-macos]
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - name: Download macOS artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: RSIEdit-osx-x64
+
+      - name: Add macOS to release
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: v${{ needs.prepare.outputs.version }}
+          files: RSIEdit-osx-x64.zip
