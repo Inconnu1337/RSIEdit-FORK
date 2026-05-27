@@ -1,12 +1,15 @@
-﻿using System;
+using System;
 using Avalonia.Media.Imaging;
+using Editor.Animation;
 using SpaceWizards.RsiLib.Directions;
 using ReactiveUI;
 
 namespace Editor.ViewModels;
 
-public class RsiFramesViewModel : ViewModelBase
+public class RsiFramesViewModel : ViewModelBase, IAnimatable
 {
+    private const int DirectionCount = 8;
+
     private Bitmap _full;
     private Bitmap _south;
     private Bitmap _north;
@@ -19,6 +22,11 @@ public class RsiFramesViewModel : ViewModelBase
     private bool _showFull;
     private bool _showCardinals;
     private bool _showDiagonals;
+
+    private readonly Bitmap?[]?[] _animationFrames = new Bitmap?[]?[DirectionCount];    private readonly float[][] _animationDelays = new float[DirectionCount][];
+    private readonly int[] _currentFrame = new int[DirectionCount];
+    private readonly float[] _elapsed = new float[DirectionCount];
+    private bool _animationActive;
 
     public RsiFramesViewModel(Bitmap full, DirectionType? direction)
     {
@@ -33,6 +41,7 @@ public class RsiFramesViewModel : ViewModelBase
         _northWest = full;
 
         SetDirections(direction);
+        AnimationTicker.Subscribe(this);
     }
 
     public bool ShowFull
@@ -139,6 +148,71 @@ public class RsiFramesViewModel : ViewModelBase
             default:
                 throw new ArgumentOutOfRangeException(nameof(direction), direction, null);
         }
+    }
+
+    public void ClearAnimation()
+    {
+        _animationActive = false;
+        for (var i = 0; i < DirectionCount; i++)
+        {
+            _animationFrames[i] = null;
+            _animationDelays[i] = Array.Empty<float>();
+            _currentFrame[i] = 0;
+            _elapsed[i] = 0f;
+        }
+    }
+
+    public void SetAnimation(Direction direction, Bitmap?[] frames, float[] delays)
+    {
+        var i = (int) direction;
+        _animationFrames[i] = frames;
+        _animationDelays[i] = delays;
+        _currentFrame[i] = 0;
+        _elapsed[i] = 0f;
+        _animationActive = true;
+    }
+
+    public void Animate(TimeSpan delta)
+    {
+        if (!_animationActive)
+            return;
+
+        var seconds = (float) delta.TotalSeconds;
+
+        for (var dir = 0; dir < DirectionCount; dir++)
+        {
+            var frames = _animationFrames[dir];
+            var delays = _animationDelays[dir];
+            if (frames == null || frames.Length <= 1 || delays.Length == 0)
+                continue;
+
+            _elapsed[dir] += seconds;
+            var currentDelay = GetDelay(delays, _currentFrame[dir]);
+            var guard = 0;
+            var changed = false;
+            while (_elapsed[dir] >= currentDelay && guard++ < frames.Length)
+            {
+                _elapsed[dir] -= currentDelay;
+                _currentFrame[dir] = (_currentFrame[dir] + 1) % frames.Length;
+                currentDelay = GetDelay(delays, _currentFrame[dir]);
+                changed = true;
+            }
+
+            if (!changed)
+                continue;
+
+            var next = frames[_currentFrame[dir]];
+            if (next != null)
+                Set((Direction) dir, next);
+        }
+    }
+
+    private static float GetDelay(float[] delays, int index)
+    {
+        if (index >= delays.Length)
+            return 0.1f;
+        var d = delays[index];
+        return d > 0 ? d : 0.1f;
     }
 
     public void SetDirections(DirectionType? direction)

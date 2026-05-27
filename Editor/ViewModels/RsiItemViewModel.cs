@@ -398,6 +398,7 @@ public class RsiItemViewModel : ViewModelBase, IDisposable
             await SelectedStates[0].Image.State.LoadImage(png, Item.Size);
         }
 
+        SelectedStates[0].RefreshAnimation();
         RefreshFrames();
         UpdateImageState(SelectedStates[0]);
     }
@@ -583,6 +584,8 @@ public class RsiItemViewModel : ViewModelBase, IDisposable
 
     private void RefreshFrames()
     {
+        Frames.ClearAnimation();
+
         if (SelectedStates.Count != 1)
         {
             for (var i = 0; i < 8; i++)
@@ -596,11 +599,42 @@ public class RsiItemViewModel : ViewModelBase, IDisposable
         }
 
         var state = SelectedStates[0].Image.State;
+        var directionCount = (int) state.Directions;
+        var hasAnimation = state.DelayLength > 1 && state.Delays is { Count: > 0 };
 
-        for (var direction = 0; direction < (int) state.Directions; direction++)
+        for (var direction = 0; direction < directionCount; direction++)
         {
             var frame = state.Frames[direction, 0]?.ToBitmap(PreviewResizeOptions) ?? _blankFrame;
             Frames.Set((Direction) direction, frame);
+
+            if (!hasAnimation)
+                continue;
+
+            var delays = state.Delays!;
+            var delayRow = direction < delays.Count ? delays[direction] : delays[0];
+            if (delayRow.Count <= 1)
+                continue;
+
+            var frameCount = delayRow.Count;
+            var bitmaps = new Bitmap?[frameCount];
+            var valid = 0;
+            for (var f = 0; f < frameCount; f++)
+            {
+                var sourceFrame = state.Frames[direction, f];
+                if (sourceFrame == null)
+                    continue;
+                bitmaps[f] = sourceFrame.ToBitmap(PreviewResizeOptions);
+                valid++;
+            }
+
+            if (valid <= 1)
+                continue;
+
+            var delayArray = new float[frameCount];
+            for (var f = 0; f < frameCount; f++)
+                delayArray[f] = delayRow[f];
+
+            Frames.SetAnimation((Direction) direction, bitmaps, delayArray);
         }
 
         Frames.SetDirections(state.Directions);
